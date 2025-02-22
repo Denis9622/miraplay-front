@@ -1,11 +1,17 @@
+import { useEffect, useState } from "react";
 import styles from "./recentCustomers.module.css";
+import { mockCustomers } from "../../data/mockData.js";
 
 const RecentCustomers = () => {
-  const customers = [
-    { name: "John Doe", email: "john@example.com", amount: "$250" },
-    { name: "Jane Smith", email: "jane@example.com", amount: "$180" },
-    { name: "Mike Johnson", email: "mike@example.com", amount: "$300" },
-  ];
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCustomers(mockCustomers);
+    }, 1000);
+  }, []);
+
+  if (!customers.length) return <p>Loading...</p>;
 
   return (
     <div className={styles.recentCustomers}>

@@ -1,11 +1,31 @@
+import { useEffect, useState } from "react";
 import styles from "./incomeExpenses.module.css";
+import { mockTransactions } from "../../data/mockData.js";
 
-const IncomeExpenses = () => {
-  const transactions = [
-    { name: "Product Sale", email: "customer1@example.com", amount: "+$500" },
-    { name: "Product Refund", email: "customer2@example.com", amount: "-$100" },
-    { name: "Product Sale", email: "customer3@example.com", amount: "+$300" },
-  ];
+const IncomeExpenses = ({ startDate, endDate }) => {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      let filteredData = mockTransactions;
+
+      // Фильтрация по дате (если выбраны даты)
+      if (startDate && endDate) {
+        filteredData = filteredData.filter((t, index) => {
+          const transactionDate = new Date();
+          transactionDate.setDate(transactionDate.getDate() - index);
+          return (
+            transactionDate >= new Date(startDate) &&
+            transactionDate <= new Date(endDate)
+          );
+        });
+      }
+
+      setTransactions(filteredData);
+    }, 1000);
+  }, [startDate, endDate]);
+
+  if (!transactions.length) return <p>Loading...</p>;
 
   return (
     <div className={styles.incomeExpenses}>

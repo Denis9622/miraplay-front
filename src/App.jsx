@@ -8,8 +8,8 @@ import css from "./App.module.css";
 
 // Ленивое подключение страниц
 const DashboardPage = lazy(() => import("./pages/DashboardPage.jsx"));
-// const OrdersPage = lazy(() => import("./pages/OrdersPage.jsx"));
-// const ProductsPage = lazy(() => import("./pages/ProductsPage.jsx"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage.jsx"));
+const ProductsPage = lazy(() => import("./pages/ProductsPage.jsx"));
 // const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
 // const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
@@ -32,13 +32,13 @@ export default function App() {
                 />
               }
             />
-        {/* <Route
+        <Route
               path="/orders"
               element={
                 <PrivateRoute redirectTo="/login" component={<OrdersPage />} />
               }
-            /> */}
-        {/* <Route
+            />
+        <Route
               path="/products"
               element={
                 <PrivateRoute
@@ -46,7 +46,7 @@ export default function App() {
                   component={<ProductsPage />}
                 />
               }
-            /> */}
+            />
         {/* <Route
               path="/customers"
               element={

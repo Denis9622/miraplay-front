@@ -1,11 +1,18 @@
+import { useEffect, useState } from "react";
 import styles from "./statistics.module.css";
+import { mockStatistics } from "../../data/mockData.js";
 
 const Statistics = () => {
-  const data = {
-    products: 120,
-    suppliers: 15,
-    customers: 500,
-  };
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Имитация API-запроса
+    setTimeout(() => {
+      setData(mockStatistics);
+    }, 1000);
+  }, []);
+
+  if (!data) return <p>Loading...</p>;
 
   return (
     <div className={styles.statistics}>
