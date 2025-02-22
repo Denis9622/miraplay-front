@@ -1,29 +1,35 @@
 import { useDispatch } from "react-redux";
-import { loginUser } from "../redux/auth/authOperations.js";
+import { registerUser } from "../redux/auth/authOperations.js";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const result = await dispatch(loginUser(formData));
-    if (result.meta.requestStatus === "fulfilled") {
-      navigate("/dashboard");
-    }
+    dispatch(registerUser(formData));
   };
 
   return (
     <div>
-      <h1>Login</h1>
+      <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          onChange={handleChange}
+          required
+        />
         <input
           type="email"
           name="email"
@@ -38,10 +44,10 @@ const LoginPage = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
 };
 
-export default LoginPage;
+export default SignupPage;

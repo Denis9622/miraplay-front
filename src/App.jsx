@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";// , Navigate 
 import { lazy, Suspense } from "react";//
-// import { SharedLayout } from "./components/shared/SharedLayout.jsx";
 import { PrivateRoute } from "./components/routes/PrivateRoute.jsx";
 import { RestrictedRoute } from "./components/routes/RestrictedRoute.jsx";
 import Loader from "./components/Loader/Loader.jsx";
+import { SharedLayout } from "./components/shared/SharedLayout.jsx";
+
 import css from "./App.module.css";
 
 // Ленивое подключение страниц
@@ -13,17 +14,20 @@ const ProductsPage = lazy(() => import("./pages/ProductsPage.jsx"));
 // const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
 // const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
+const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
+
 // const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
 
 export default function App() {
   return (
     <div className={css.app}>
+      <SharedLayout />
       <Suspense fallback={<Loader loader={true} />}>
-      <Routes>
-        {/* Общий layout с Header и Sidebar */}
-        {/* <Route path="/" element={<SharedLayout />}> */}
-        {/* <Route index element={<Navigate to="/dashboard" replace />} /> */}
-        <Route
+        <Routes>
+          {/* Общий layout с Header и Sidebar */}
+          <Route path="/" element={<SharedLayout />}>
+            {/* <Route index element={<Navigate to="/dashboard" replace />} /> */}
+            <Route
               path="/dashboard"
               element={
                 <PrivateRoute
@@ -32,13 +36,13 @@ export default function App() {
                 />
               }
             />
-        <Route
+            <Route
               path="/orders"
               element={
                 <PrivateRoute redirectTo="/login" component={<OrdersPage />} />
               }
             />
-        <Route
+            <Route
               path="/products"
               element={
                 <PrivateRoute
@@ -47,7 +51,7 @@ export default function App() {
                 />
               }
             />
-        {/* <Route
+            {/* <Route
               path="/customers"
               element={
                 <PrivateRoute
@@ -56,7 +60,7 @@ export default function App() {
                 />
               }
             /> */}
-        {/* <Route
+            {/* <Route
               path="/suppliers"
               element={
                 <PrivateRoute
@@ -65,22 +69,32 @@ export default function App() {
                 />
               }
             />
-          </Route> */}
+         */}
+          </Route>
 
-        {/* Авторизация */}
-        <Route
-          path="/login"
-          element={
-            <RestrictedRoute
-              redirectTo="/dashboard"
-              component={<LoginPage />}
-            />
-          }
-        />
+          {/* Авторизация */}
+          <Route
+            path="/login"
+            element={
+              <RestrictedRoute
+                redirectTo="/dashboard"
+                component={<LoginPage />}
+              />
+            }
+          />
+          <Route
+            path="/Signup"
+            element={
+              <RestrictedRoute
+                redirectTo="/dashboard"
+                component={<SignupPage />}
+              />
+            }
+          />
 
-        {/* Страница не найдена */}
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
-      </Routes>
+          {/* Страница не найдена */}
+          {/* <Route path="*" element={<NotFoundPage />} /> */}
+        </Routes>
       </Suspense>
     </div>
   );

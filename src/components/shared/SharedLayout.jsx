@@ -1,8 +1,18 @@
-import { Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectIsAuthenticated } from "../../redux/auth/selectors.js";
+import { Outlet } from "react-router-dom";
+import Header from "./Header.jsx";
+import Sidebar from "./Sidebar.jsx";
+import css from "./sharedLayout.module.css";
 
-export const RestrictedRoute = ({ component, redirectTo }) => {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  return !isAuthenticated ? component : <Navigate to={redirectTo} />;
+export const SharedLayout = () => {
+  return (
+    <div className={css.layout}>
+      <Header />
+      <div className={css.content}>
+        <Sidebar />
+        <main>
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 };

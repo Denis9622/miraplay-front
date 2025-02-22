@@ -1,0 +1,216 @@
+.header {
+  max-width: 1440px;
+  display: flex;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 24px 128px;
+  margin-bottom: 24px;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(25, 26, 21, 0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  margin-right: 130px;
+}
+
+.logospan {
+  font-weight: 700;
+  color: #3470ff;
+}
+
+.logospan:hover {
+  color: #3498db;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ulclass {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  text-decoration: none;
+  color: rgba(25, 26, 21, 1);
+  transition: color 0.3s;
+}
+
+.navLink:hover {
+  color: #3498db;
+}
+
+.active {
+  color: red;
+}
+
+.userAuth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  gap: 8px;
+}
+
+.userIconContainer {
+  width: 40px;
+  height: 40px;
+  padding: 12px;
+  background-color: #3470ff; 
+  border-radius: 10px; 
+  margin-right: 14px;
+}
+.username {
+  margin-right: 28px;
+}
+
+.userIcon {
+  width: 100%;
+  height: 100%;
+}
+
+.linkAuth {
+  padding: 14px 40px;
+  border: solid 1px rgba(25, 26, 21, 0.2);
+  border-radius: 30px;
+  background-color: transparent;
+  color: rgba(25, 26, 21, 1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  
+}
+
+.linkAuth:last-child:not(.logoutButton) {
+  color: rgba(251, 251, 251, 1);
+  background-color: rgba(52, 112, 255, 1);
+  padding: 14px 40px;
+}
+
+.linkAuth:first-child {
+  padding: 14px 40px;
+}
+
+.linkAuth:hover {
+  border-color: rgba(25, 26, 21, 0.5);
+}
+
+.linkAuth:active {
+  transform: scale(0.95);
+  background-color: rgba(52, 112, 255, 0.8);
+}
+
+.logoutButton {
+  background-color: transparent; 
+  color: #191A15;
+  border: 1px solid rgba(25, 26, 21, 0.2);
+}
+
+
+.iconActive {
+  width: 8px;
+  height: 8px;
+  background-color: #3470ff; 
+  margin: 4px auto 0 auto; 
+  display: none; 
+  position: absolute; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  border-radius: 10px;
+}
+
+.navLinkActive .iconActive {
+  display: block;
+}
+
+.navLink,
+.navLinkActive {
+  position: relative; 
+  display: inline-block;
+}
+.grayBackground {
+  background-color: #F3F3F3;
+}
+
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0px 60px;
+  }
+
+  .logo {
+    font-size: 18px;
+    margin-right: 60px;
+  }
+
+  .ulclass {
+    gap: 20px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 20px;
+  }
+
+  .userAuth {
+    gap: 16px;
+  }
+
+  .linkAuth {
+    font-size: 14px;
+    padding: 12px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0px 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 16px;
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .ulclass {
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .userAuth {
+    margin-top: 20px;
+    flex-direction: column;
+    margin-left: 0;
+    gap: 12px;
+  }
+
+  .linkAuth {
+    font-size: 14px;
+    padding: 12px 30px;
+  }
+}

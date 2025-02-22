@@ -5,7 +5,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import PeopleIcon from "@mui/icons-material/People";
 import StoreIcon from "@mui/icons-material/Store";
-import styles from "../../styles/components/sidebar.module.css";
+import styles from "./sidebar.module.css";
 
 const Sidebar = () => {
   return (
