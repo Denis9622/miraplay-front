@@ -1,63 +1,191 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchOrders,
+  addOrder,
+  updateOrder,
+  deleteOrder,
+} from "../redux/orders/ordersOperations";
 import styles from "./ordersPage.module.css";
-import { mockOrders } from "../data/mockData.js";
 
 const OrdersPage = () => {
-  const [orders, setOrders] = useState([]);
-  const [filter, setFilter] = useState("");
+  const dispatch = useDispatch();
+  const { items, loading, error } = useSelector((state) => state.orders);
+  const [newOrder, setNewOrder] = useState({
+    userInfo: "",
+    address: "",
+    products: "",
+    orderDate: "",
+    price: 0,
+    status: "Pending",
+  });
+  const [editOrder, setEditOrder] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setOrders(mockOrders);
-    }, 1000);
-  }, []);
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
-  const filteredOrders = orders.filter((order) =>
-    order.customer.toLowerCase().includes(filter.toLowerCase())
-  );
+  // Добавление заказа
+  const handleAddOrder = () => {
+    dispatch(addOrder({ ...newOrder, products: newOrder.products.split(",") }));
+    setNewOrder({
+      userInfo: "",
+      address: "",
+      products: "",
+      orderDate: "",
+      price: 0,
+      status: "Pending",
+    });
+  };
+
+  // Обновление заказа
+  const handleUpdateOrder = () => {
+    if (editOrder) {
+      dispatch(updateOrder({ id: editOrder._id, orderData: editOrder }));
+      setEditOrder(null);
+    }
+  };
+
+  // Удаление заказа
+  const handleDeleteOrder = (id) => {
+    dispatch(deleteOrder(id));
+  };
 
   return (
     <div className={styles.ordersPage}>
       <h1>Orders</h1>
-      <input
-        type="text"
-        placeholder="Filter by customer name"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        className={styles.filterInput}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Address</th>
-            <th>Products</th>
-            <th>Order Date</th>
-            <th>Price</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredOrders.length > 0 ? (
-            filteredOrders.map((order) => (
-              <tr key={order.id}>
-                <td>{order.customer}</td>
-                <td>{order.address}</td>
-                <td>{order.products}</td>
-                <td>{order.orderDate}</td>
-                <td>{order.price}</td>
-                <td>{order.status}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" className={styles.noOrders}>
-                No orders found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+
+      {/* Форма добавления заказа */}
+      <div className={styles.form}>
+        <input
+          type="text"
+          placeholder="User Info"
+          value={newOrder.userInfo}
+          onChange={(e) =>
+            setNewOrder({ ...newOrder, userInfo: e.target.value })
+          }
+        />
+        <input
+          type="text"
+          placeholder="Address"
+          value={newOrder.address}
+          onChange={(e) =>
+            setNewOrder({ ...newOrder, address: e.target.value })
+          }
+        />
+        <input
+          type="text"
+          placeholder="Products (comma separated)"
+          value={newOrder.products}
+          onChange={(e) =>
+            setNewOrder({ ...newOrder, products: e.target.value })
+          }
+        />
+        <input
+          type="datetime-local"
+          placeholder="Order Date"
+          value={newOrder.orderDate}
+          onChange={(e) =>
+            setNewOrder({ ...newOrder, orderDate: e.target.value })
+          }
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={newOrder.price}
+          onChange={(e) =>
+            setNewOrder({ ...newOrder, price: Number(e.target.value) })
+          }
+        />
+        <select
+          value={newOrder.status}
+          onChange={(e) => setNewOrder({ ...newOrder, status: e.target.value })}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+        <button onClick={handleAddOrder}>Add Order</button>
+      </div>
+
+      {/* Форма редактирования заказа */}
+      {editOrder && (
+        <div className={styles.form}>
+          <input
+            type="text"
+            value={editOrder.userInfo}
+            onChange={(e) =>
+              setEditOrder({ ...editOrder, userInfo: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            value={editOrder.address}
+            onChange={(e) =>
+              setEditOrder({ ...editOrder, address: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            value={editOrder.products}
+            onChange={(e) =>
+              setEditOrder({ ...editOrder, products: e.target.value })
+            }
+          />
+          <input
+            type="datetime-local"
+            value={editOrder.orderDate}
+            onChange={(e) =>
+              setEditOrder({ ...editOrder, orderDate: e.target.value })
+            }
+          />
+          <input
+            type="number"
+            value={editOrder.price}
+            onChange={(e) =>
+              setEditOrder({ ...editOrder, price: Number(e.target.value) })
+            }
+          />
+          <select
+            value={editOrder.status}
+            onChange={(e) =>
+              setEditOrder({ ...editOrder, status: e.target.value })
+            }
+          >
+            <option value="Pending">Pending</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+          </select>
+          <button onClick={handleUpdateOrder}>Update Order</button>
+        </div>
+      )}
+
+      {/* Список заказов */}
+      {loading && <p>Loading...</p>}
+      {error && (
+        <p className={styles.error}>
+          {typeof error === "string"
+            ? error
+            : error?.message || "Произошла ошибка"}
+        </p>
+      )}
+      <ul>
+        {items.length === 0 ? (
+          <p>No orders found</p>
+        ) : (
+          items.map((order) => (
+            <li key={order._id}>
+              {order.userInfo} - {order.address} - {order.products.join(", ")} -{" "}
+              {new Date(order.orderDate).toLocaleString()} - ${order.price} -{" "}
+              {order.status}
+              <button onClick={() => setEditOrder(order)}>Edit</button>
+              <button onClick={() => handleDeleteOrder(order._id)}>
+                Delete
+              </button>
+            </li>
+          ))
+        )}
+      </ul>
     </div>
   );
 };

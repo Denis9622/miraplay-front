@@ -1,5 +1,8 @@
-import { Routes, Route } from "react-router-dom";// , Navigate 
-import { lazy, Suspense } from "react";//
+import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshToken, logoutUser } from "./redux/auth/authOperations.js";
+import { selectToken } from "./redux/auth/selectors.js";
 import { PrivateRoute } from "./components/routes/PrivateRoute.jsx";
 import { RestrictedRoute } from "./components/routes/RestrictedRoute.jsx";
 import Loader from "./components/Loader/Loader.jsx";
@@ -15,18 +18,41 @@ const ProductsPage = lazy(() => import("./pages/ProductsPage.jsx"));
 // const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
-
 // const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
 
 export default function App() {
+  const dispatch = useDispatch();
+  const token = useSelector(selectToken);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const tokenParts = token.split(".");
+        if (tokenParts.length !== 3) {
+          throw new Error("Invalid token structure");
+        }
+
+        const decodedPayload = JSON.parse(atob(tokenParts[1]));
+        const tokenExpiration = decodedPayload.exp * 1000;
+
+        if (Date.now() >= tokenExpiration) {
+          dispatch(refreshToken());
+        }
+      } catch (error) {
+        console.error("Ошибка при обработке токена:", error);
+        dispatch(logoutUser());
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    }
+  }, [dispatch, token]);
+
   return (
     <div className={css.app}>
-      <SharedLayout />
       <Suspense fallback={<Loader loader={true} />}>
         <Routes>
           {/* Общий layout с Header и Sidebar */}
           <Route path="/" element={<SharedLayout />}>
-            {/* <Route index element={<Navigate to="/dashboard" replace />} /> */}
             <Route
               path="/dashboard"
               element={
@@ -68,8 +94,7 @@ export default function App() {
                   component={<SuppliersPage />}
                 />
               }
-            />
-         */}
+            /> */}
           </Route>
 
           {/* Авторизация */}
@@ -83,7 +108,7 @@ export default function App() {
             }
           />
           <Route
-            path="/Signup"
+            path="/signup"
             element={
               <RestrictedRoute
                 redirectTo="/dashboard"
