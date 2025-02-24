@@ -1,36 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/auth/authOperations";
 import { useNavigate, NavLink } from "react-router-dom";
-import SignIn from "../../pages/LoginPage"; // Подключаем модалку входа
-import SignUp from "../../pages/SignupPage"; // Подключаем модалку регистрации
+import SignIn from "../../pages/LoginPage";
+import SignUp from "../../pages/SignupPage";
 import styles from "./Header.module.css";
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user); // Получаем пользователя из Redux
-  console.log("User from Redux:", user);
-
+  const user = useSelector((state) => state.auth.user);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const [isSignUpOpen, setSignUpOpen] = useState(false);
   const [isSignInOpen, setSignInOpen] = useState(false);
 
+  useEffect(() => {
+    console.log("User from Redux:", user);
+    console.log("Is Authenticated:", isAuthenticated);
+  }, [user, isAuthenticated]);
+
   const handleLogout = async () => {
+    console.log("Logout button clicked");
     await dispatch(logoutUser());
-    navigate("/login"); // Перенаправляем на страницу входа
+    console.log("User has been logged out");
+    navigate("/login");
   };
 
   return (
     <>
-      
       <header className={styles.header}>
-        {/* Логотип */}
         <h1 className={styles.logo}>
           <NavLink to="/">Medicine Store</NavLink>
         </h1>
 
-        {/* Навигация */}
         <nav className={styles.nav}>
           <ul className={styles.ulclass}>
             <li>
@@ -43,41 +46,24 @@ function Header() {
                 Dashboard
               </NavLink>
             </li>
-            {user && (
-              <li>
-                <NavLink
-                  to="/favorites"
-                  className={({ isActive }) =>
-                    isActive ? styles.navLinkActive : styles.navLink
-                  }
-                >
-                  Favorites
-                </NavLink>
-              </li>
-            )}
           </ul>
         </nav>
 
-        {/* Аутентификация */}
         <div className={styles.userAuth}>
-          {user ? (
-            <>
-              {/* Блок с именем пользователя и выходом */}
-              <div className={styles.userInfo}>
-                <span className={styles.username}>
-                  {user.displayName || user.email}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className={`${styles.linkAuth} ${styles.logoutUserButton}`}
-                >
-                  Logout
-                </button>
-              </div>
-            </>
+          {isAuthenticated ? (
+            <div className={styles.userInfo}>
+              <span className={styles.username}>
+                {user && (user.displayName || user.email)}
+              </span>
+              <button
+                onClick={handleLogout}
+                className={`${styles.linkAuth} ${styles.logoutUserButton}`}
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <>
-              {/* Кнопки входа и регистрации */}
               <button
                 onClick={() => setSignInOpen(true)}
                 className={styles.linkAuth}
@@ -95,10 +81,8 @@ function Header() {
         </div>
       </header>
 
-      {/* Модалки для входа и регистрации */}
       {isSignInOpen && <SignIn onClose={() => setSignInOpen(false)} />}
       {isSignUpOpen && <SignUp onClose={() => setSignUpOpen(false)} />}
-      
     </>
   );
 }

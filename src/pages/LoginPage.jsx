@@ -16,9 +16,11 @@ const LoginPage = () => {
     e.preventDefault();
     const result = await dispatch(loginUser(formData));
     if (result.meta.requestStatus === "fulfilled") {
-      const token = result.payload.accessToken;
-      localStorage.setItem("authToken", token); // Сохраняем токен в localStorage
+      // Токен уже сохраняется в authOperations.js
       navigate("/dashboard");
+    } else {
+      // Обработка ошибок
+      console.error("Ошибка входа:", result.payload);
     }
   };
 

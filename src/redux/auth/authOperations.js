@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:3000/api";
+axios.defaults.withCredentials = true; // Добавлено для отправки куки с запросом
 
 // 📌 Функция для получения заголовков с токеном
 const getAuthHeader = () => {
@@ -24,8 +25,15 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post("/register", userData);
-      setAuthHeader(response.data.data.token);
-      return response.data.data;
+      const { user, accessToken, refreshToken } = response.data.data;
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setAuthHeader(accessToken);
+
+      return { user, accessToken, refreshToken };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -38,29 +46,48 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post("/login", credentials);
-      setAuthHeader(response.data.data.token);
-      return response.data.data;
+      const { user, accessToken, refreshToken } = response.data.data;
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setAuthHeader(accessToken);
+
+      return { user, accessToken, refreshToken };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
 
-// 📌 Выход
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post("/logout", null, getAuthHeader());
+      const response = await axios.post(
+        "/logout",
+        {},
+        { withCredentials: true }
+      );
 
-      axios.defaults.headers.common["Authorization"] = "";
+      // Чистим localStorage
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("refreshToken");
+      delete axios.defaults.headers.common["Authorization"];
+
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Logout failed");
+      console.error("Logout error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || "Ошибка выхода");
     }
   }
 );
+
+
+
+
 
 // 📌 Обновление токена
 export const refreshToken = createAsyncThunk(

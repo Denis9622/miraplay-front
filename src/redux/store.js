@@ -4,6 +4,10 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/authSlice.js";
 import productsReducer from "./products/productsSlice.js";
 import ordersReducer from "./orders/ordersSlice.js";
+import customersReducer from "./customers/customersSlice";
+import suppliersReducer from "./suppliers/suppliersSlice";
+import dashboardReducer from "./dashboard/dashboardSlice";
+
 
 
 
@@ -18,6 +22,9 @@ export const store = configureStore({
     auth: persistReducer(authPersistConfig, authReducer),
     products: productsReducer,
     orders: ordersReducer,
+    customers: customersReducer,
+    suppliers: suppliersReducer,
+    dashboard: dashboardReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

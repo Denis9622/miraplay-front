@@ -14,8 +14,8 @@ import css from "./App.module.css";
 const DashboardPage = lazy(() => import("./pages/DashboardPage.jsx"));
 const OrdersPage = lazy(() => import("./pages/OrdersPage.jsx"));
 const ProductsPage = lazy(() => import("./pages/ProductsPage.jsx"));
-// const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
-// const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
+const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
+const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
 // const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
@@ -77,7 +77,7 @@ export default function App() {
                 />
               }
             />
-            {/* <Route
+            <Route
               path="/customers"
               element={
                 <PrivateRoute
@@ -85,8 +85,8 @@ export default function App() {
                   component={<CustomersPage />}
                 />
               }
-            /> */}
-            {/* <Route
+            />
+            <Route
               path="/suppliers"
               element={
                 <PrivateRoute
@@ -94,7 +94,7 @@ export default function App() {
                   component={<SuppliersPage />}
                 />
               }
-            /> */}
+            />
           </Route>
 
           {/* Авторизация */}

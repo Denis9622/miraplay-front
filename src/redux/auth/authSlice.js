@@ -1,3 +1,4 @@
+// src/redux/auth/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
   registerUser,
@@ -19,6 +20,8 @@ const initialState = {
   token: localStorage.getItem("token"),
   refreshToken: localStorage.getItem("refreshToken"),
   isAuthenticated: !!localStorage.getItem("token"),
+  isLoading: false,
+  error: null,
 };
 
 const authSlice = createSlice({
@@ -27,7 +30,12 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.user = action.payload.user;
         state.token = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
@@ -36,7 +44,16 @@ const authSlice = createSlice({
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("refreshToken", action.payload.refreshToken);
       })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.user = action.payload.user;
         state.token = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
@@ -44,6 +61,10 @@ const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("refreshToken", action.payload.refreshToken);
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;

@@ -9,8 +9,8 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import InventoryIcon from "@mui/icons-material/Inventory";
-// import PeopleIcon from "@mui/icons-material/People";
-// import StoreIcon from "@mui/icons-material/Store";
+import PeopleIcon from "@mui/icons-material/People";
+import StoreIcon from "@mui/icons-material/Store";
 import styles from "./sidebar.module.css";
 
 const Sidebar = () => {
@@ -41,7 +41,7 @@ const Sidebar = () => {
             <ListItemText primary="Products" />
           </ListItemButton>
         </ListItem>
-        {/* <ListItem component="div">
+        <ListItem component="div">
           <ListItemButton component={NavLink} to="/customers">
             <ListItemIcon>
               <PeopleIcon />
@@ -56,7 +56,7 @@ const Sidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Suppliers" />
           </ListItemButton>
-        </ListItem> */}
+        </ListItem>
       </List>
     </nav>
   );
