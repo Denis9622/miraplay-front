@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRecentCustomers } from "../../redux/dashboard/dashboardOperations";
 import styles from "./recentCustomers.module.css";
-import { mockCustomers } from "../../data/mockData.js";
 
 const RecentCustomers = () => {
-  const [customers, setCustomers] = useState([]);
+  const dispatch = useDispatch();
+  const { recentCustomers, loading, error } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
-    setTimeout(() => {
-      setCustomers(mockCustomers);
-    }, 1000);
-  }, []);
+    dispatch(fetchRecentCustomers());
+  }, [dispatch]);
 
-  if (!customers.length) return <p>Loading...</p>;
+  if (loading) return <p>Loading customers...</p>;
+  if (error) return <p className={styles.error}>{error}</p>;
 
   return (
     <div className={styles.recentCustomers}>
@@ -25,11 +28,11 @@ const RecentCustomers = () => {
           </tr>
         </thead>
         <tbody>
-          {customers.map((customer, index) => (
+          {recentCustomers.map((customer, index) => (
             <tr key={index}>
               <td>{customer.name}</td>
               <td>{customer.email}</td>
-              <td>{customer.amount}</td>
+              <td>${customer.spent}</td>
             </tr>
           ))}
         </tbody>

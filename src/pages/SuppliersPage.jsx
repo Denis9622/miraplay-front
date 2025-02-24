@@ -21,19 +21,37 @@ const SuppliersPage = () => {
   const [editSupplier, setEditSupplier] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchSuppliers());
+    dispatch(fetchSuppliers())
+      .unwrap()
+      .catch((error) => {
+        console.error("Failed to fetch suppliers:", error);
+      });
   }, [dispatch]);
 
-  // Фильтрация поставщиков
+  // Filter suppliers
   const filteredSuppliers = items.filter((supplier) =>
     supplier.name.toLowerCase().includes(filter.toLowerCase())
   );
+
+  // Update supplier
+  const handleUpdateSupplier = () => {
+    if (editSupplier) {
+      dispatch(
+        updateSupplier({ id: editSupplier._id, supplierData: editSupplier })
+      )
+        .unwrap()
+        .then(() => {
+          dispatch(fetchSuppliers());
+        });
+      setEditSupplier(null); // Reset editing mode
+    }
+  };
 
   return (
     <div className={styles.suppliersPage}>
       <h1>Suppliers</h1>
 
-      {/* Фильтр */}
+      {/* Filter */}
       <input
         type="text"
         placeholder="Filter by name"
@@ -41,7 +59,7 @@ const SuppliersPage = () => {
         onChange={(e) => setFilter(e.target.value)}
       />
 
-      {/* Форма добавления поставщика */}
+      {/* Add Supplier Form */}
       <div className={styles.form}>
         <input
           type="text"
@@ -80,7 +98,44 @@ const SuppliersPage = () => {
         </button>
       </div>
 
-      {/* Таблица поставщиков */}
+      {/* Edit Supplier Form */}
+      {editSupplier && (
+        <div className={styles.form}>
+          <h3>Edit Supplier</h3>
+          <input
+            type="text"
+            value={editSupplier.name}
+            onChange={(e) =>
+              setEditSupplier({ ...editSupplier, name: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            value={editSupplier.company}
+            onChange={(e) =>
+              setEditSupplier({ ...editSupplier, company: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            value={editSupplier.address}
+            onChange={(e) =>
+              setEditSupplier({ ...editSupplier, address: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            value={editSupplier.phone}
+            onChange={(e) =>
+              setEditSupplier({ ...editSupplier, phone: e.target.value })
+            }
+          />
+          <button onClick={handleUpdateSupplier}>Update Supplier</button>
+          <button onClick={() => setEditSupplier(null)}>Cancel</button>
+        </div>
+      )}
+
+      {/* Suppliers Table */}
       {loading && <p>Loading...</p>}
       {error && <p className={styles.error}>{error}</p>}
       <ul>

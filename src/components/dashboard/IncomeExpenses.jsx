@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchIncomeExpenses } from "../../redux/dashboard/dashboardOperations";
 import styles from "./incomeExpenses.module.css";
-import { mockTransactions } from "../../data/mockData.js";
 
-const IncomeExpenses = ({ startDate, endDate }) => {
-  const [transactions, setTransactions] = useState([]);
+const IncomeExpenses = ({ startDate }) => {
+  const dispatch = useDispatch();
+  const { incomeExpenses, loading, error } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
-    setTimeout(() => {
-      let filteredData = mockTransactions;
+    if (startDate) {
+      dispatch(fetchIncomeExpenses({ startDate }));
+    }
+  }, [dispatch, startDate]);
 
-      // Фильтрация по дате (если выбраны даты)
-      if (startDate && endDate) {
-        filteredData = filteredData.filter((t, index) => {
-          const transactionDate = new Date();
-          transactionDate.setDate(transactionDate.getDate() - index);
-          return (
-            transactionDate >= new Date(startDate) &&
-            transactionDate <= new Date(endDate)
-          );
-        });
-      }
-
-      setTransactions(filteredData);
-    }, 1000);
-  }, [startDate, endDate]);
-
-  if (!transactions.length) return <p>Loading...</p>;
+  if (loading) return <p>Loading income & expenses...</p>;
+  if (error) return <p className={styles.error}>{error}</p>;
 
   return (
     <div className={styles.incomeExpenses}>
@@ -33,24 +24,17 @@ const IncomeExpenses = ({ startDate, endDate }) => {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Amount</th>
+            <th>Date</th>
+            <th>Income</th>
+            <th>Expenses</th>
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction, index) => (
-            <tr
-              key={index}
-              className={
-                transaction.amount.startsWith("-")
-                  ? styles.expense
-                  : styles.income
-              }
-            >
-              <td>{transaction.name}</td>
-              <td>{transaction.email}</td>
-              <td>{transaction.amount}</td>
+          {incomeExpenses.map((entry, index) => (
+            <tr key={index}>
+              <td>{entry.date}</td>
+              <td className={styles.income}>${entry.income}</td>
+              <td className={styles.expense}>${entry.expenses}</td>
             </tr>
           ))}
         </tbody>

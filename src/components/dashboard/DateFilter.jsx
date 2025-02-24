@@ -6,21 +6,27 @@ const DateFilter = ({ onFilterChange }) => {
   const [endDate, setEndDate] = useState("");
 
   const handleFilter = () => {
-    onFilterChange(startDate, endDate);
+    if (startDate && endDate) {
+      onFilterChange(startDate, endDate);
+    }
   };
 
   return (
     <div className={styles.filterContainer}>
+      <label>Start Date:</label>
       <input
         type="date"
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
       />
+
+      <label>End Date:</label>
       <input
         type="date"
         value={endDate}
         onChange={(e) => setEndDate(e.target.value)}
       />
+
       <button onClick={handleFilter}>Apply Filter</button>
     </div>
   );

@@ -1,32 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStatistics } from "../../redux/dashboard/dashboardOperations";
 import styles from "./statistics.module.css";
-import { mockStatistics } from "../../data/mockData.js";
 
 const Statistics = () => {
-  const [data, setData] = useState(null);
+  const dispatch = useDispatch();
+  const { statistics, loading, error } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
-    // Имитация API-запроса
-    setTimeout(() => {
-      setData(mockStatistics);
-    }, 1000);
-  }, []);
+    dispatch(fetchStatistics());
+  }, [dispatch]);
 
-  if (!data) return <p>Loading...</p>;
+  if (loading) return <p>Loading statistics...</p>;
+  if (error) return <p className={styles.error}>{error}</p>;
 
+
+  
   return (
     <div className={styles.statistics}>
       <div className={styles.card}>
         <h3>All Products</h3>
-        <p>{data.products}</p>
+        <p>{statistics?.totalProducts || 0}</p>
       </div>
       <div className={styles.card}>
         <h3>All Suppliers</h3>
-        <p>{data.suppliers}</p>
+        <p>{statistics?.totalSuppliers || 0}</p>
       </div>
       <div className={styles.card}>
         <h3>All Customers</h3>
-        <p>{data.customers}</p>
+        <p>{statistics?.totalCustomers || 0}</p>
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchIncomeExpenses } from "../../redux/dashboard/dashboardOperations";
 import {
   LineChart,
   Line,
@@ -7,38 +9,33 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { mockTransactions } from "../../data/mockData.js";
 import styles from "./incomeChart.module.css";
 
-const IncomeChart = () => {
-  const [data, setData] = useState([]);
+const IncomeChart = ({ startDate }) => {
+  const dispatch = useDispatch();
+  const { incomeExpenses, loading, error } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
-    setTimeout(() => {
-      // Преобразуем данные для графика
-      const transformedData = mockTransactions.map((t, index) => ({
-        name: `Day ${index + 1}`,
-        amount: parseInt(
-          t.amount.replace("$", "").replace("+", "").replace("-", ""),
-          10
-        ),
-        type: t.amount.startsWith("-") ? "expense" : "income",
-      }));
-      setData(transformedData);
-    }, 1000);
-  }, []);
+    if (startDate) {
+      dispatch(fetchIncomeExpenses({ startDate }));
+    }
+  }, [dispatch, startDate]);
 
-  if (!data.length) return <p>Loading chart...</p>;
+  if (loading) return <p>Loading chart...</p>;
+  if (error) return <p className={styles.error}>{error}</p>;
 
   return (
     <div className={styles.chartContainer}>
       <h3>Income & Expenses Over Time</h3>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <XAxis dataKey="name" />
+        <LineChart data={incomeExpenses}>
+          <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
-          <Line type="monotone" dataKey="amount" stroke="#2a9d8f" />
+          <Line type="monotone" dataKey="income" stroke="#2a9d8f" />
+          <Line type="monotone" dataKey="expenses" stroke="#e63946" />
         </LineChart>
       </ResponsiveContainer>
     </div>
