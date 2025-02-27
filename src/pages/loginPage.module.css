@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  /* height: 100vh; */
+  padding: 0px 100px 262px 100px;
+  background-color: #f8fafa;
+
+  position: relative;
+    /* margin-bottom: 262px; */
+
+}
+
+.leftSide {
+  width: 614px;
+  margin-right: 150px;
+}
+
+.title {
+  margin-top: 226px;
+  font-weight: 600;
+  font-size: 54px;
+  /* font-family: inter, sans-serif; */
+  line-height: 60px;
+  color: #000;
+  /* margin-bottom: 20px; */
+  letter-spacing: 0;
+}
+
+.greenText {
+  color: #34a853;
+}
+
+.pillImage {
+  position: absolute;
+  top: 122px;
+  right: 745px;
+  width: 179px;
+  height: 175px;
+}
+
+.rightSide {
+  margin-top: 226px;
+  width: 323px;
+  /* margin-right: 253px; */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* background: #fff; */
+  /* padding: 30px; */
+  /* border-radius: 10px; */
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
+}
+
+.input {
+  width: 100%;
+  padding: 13px 18px;
+    color: rgba(29, 30, 33, 0.4);
+
+  border: 1px solid rgba(29, 30, 33, 0.1);
+  border-radius: 60px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.button {
+  font-family: inherit;
+  margin-top: 48px;
+  background-color: #59b17a;
+  color: white;
+  padding: 13px;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.button:hover {
+  background-color: #3f945f;
+}
+
+.signupLink {
+  color: rgba(29, 30, 33, 0.4);
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  margin: 0 auto;
+}

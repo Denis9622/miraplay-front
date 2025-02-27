@@ -7,6 +7,7 @@ import {
   refreshToken,
 } from "./authOperations.js";
 
+// 🔹 Функция загрузки данных из localStorage с обработкой ошибок
 const loadFromStorage = (key) => {
   try {
     return JSON.parse(localStorage.getItem(key)) || null;
@@ -27,7 +28,25 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    // ✅ Добавляем возможность обновлять пользователя вручную
+    setUser: (state, action) => {
+      state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    },
+    // ✅ Функция для сброса состояния при разлогине
+    clearAuthState: (state) => {
+      state.user = null;
+      state.token = null;
+      state.refreshToken = null;
+      state.isAuthenticated = false;
+      state.isLoading = false;
+      state.error = null;
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -78,8 +97,19 @@ const authSlice = createSlice({
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.token = action.payload.accessToken;
         localStorage.setItem("token", action.payload.accessToken);
+      })
+      .addCase(refreshToken.rejected, (state) => {
+        state.user = null;
+        state.token = null;
+        state.refreshToken = null;
+        state.isAuthenticated = false;
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
       });
   },
 });
 
+// ✅ Экспортируем setUser и clearAuthState для обновления Redux вручную
+export const { setUser, clearAuthState } = authSlice.actions;
 export default authSlice.reducer;

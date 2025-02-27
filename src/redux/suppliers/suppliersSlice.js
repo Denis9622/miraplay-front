@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://admindashboard-back-qth7.onrender.com/api";
+axios.defaults.baseURL = "http://localhost:3000/api";
 
 // 📌 **Получить всех поставщиков (GET)**
 export const fetchSuppliers = createAsyncThunk(

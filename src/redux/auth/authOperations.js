@@ -1,7 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+// import { setUser } from "./authSlice.js"; 
 
-axios.defaults.baseURL = "https://admindashboard-back-qth7.onrender.com/api";
+
+axios.defaults.baseURL = "http://localhost:3000/api/login/api";
 axios.defaults.withCredentials = true; // Добавлено для отправки куки с запросом
 
 // 📌 Функция для получения заголовков с токеном
@@ -10,7 +12,7 @@ const getAuthHeader = () => {
   return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 };
 
-// 📌 Устанавливаем токен в заголовки глобально
+// 📌 Устанавливаем токен в заголовки запросов
 const setAuthHeader = (token) => {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
@@ -41,51 +43,72 @@ export const registerUser = createAsyncThunk(
 );
 
 // 📌 Логин
+
+
+// 📌 Логин пользователя
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post("/login", credentials);
+
+      console.log("🟢 Server Response:", response.data); // Проверяем, что возвращает сервер
+
       const { user, accessToken, refreshToken } = response.data.data;
+
+      if (!user || !user.email) {
+        throw new Error("Invalid user data received");
+      }
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      setAuthHeader(accessToken);
-
       return { user, accessToken, refreshToken };
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error("🚨 Login error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || "Ошибка входа");
     }
   }
 );
+
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
+      console.log("Sending logout request with cookies:", document.cookie);
+
+      const refreshToken = localStorage.getItem("refreshToken");
+
       const response = await axios.post(
         "/logout",
         {},
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: refreshToken
+            ? { Authorization: `Bearer ${refreshToken}` }
+            : {},
+        }
       );
 
-      // Чистим localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      // 🧹 Удаляем токены из хранилища
+      localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      sessionStorage.clear();
       delete axios.defaults.headers.common["Authorization"];
+
+      console.log("✅ Logout successful:", response.data);
+      console.log("Cookies after logout:", document.cookie);
 
       return response.data;
     } catch (error) {
-      console.error("Logout error:", error.response?.data || error.message);
+      console.error("🚨 Logout error:", error.response?.data || error.message);
       return rejectWithValue(error.response?.data?.message || "Ошибка выхода");
     }
   }
 );
-
-
 
 
 

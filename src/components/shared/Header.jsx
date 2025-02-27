@@ -5,19 +5,22 @@ import { useNavigate, NavLink } from "react-router-dom";
 import SignIn from "../../pages/LoginPage";
 import SignUp from "../../pages/SignupPage";
 import styles from "./Header.module.css";
+ import Logo from "../assets/logo.svg";
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const [isSignUpOpen, setSignUpOpen] = useState(false);
   const [isSignInOpen, setSignInOpen] = useState(false);
 
+  // Логируем Redux-состояние пользователя
   useEffect(() => {
-    console.log("User from Redux:", user);
-    console.log("Is Authenticated:", isAuthenticated);
+    console.log("Redux User:", user);
+    console.log("Redux Authenticated:", isAuthenticated);
   }, [user, isAuthenticated]);
 
   const handleLogout = async () => {
@@ -30,10 +33,10 @@ function Header() {
   return (
     <>
       <header className={styles.header}>
+        <img src={Logo} alt="Logo" className={styles.logo} />{" "}
         <h1 className={styles.logo}>
           <NavLink to="/">Medicine Store</NavLink>
         </h1>
-
         <nav className={styles.nav}>
           <ul className={styles.ulclass}>
             <li>
@@ -48,12 +51,11 @@ function Header() {
             </li>
           </ul>
         </nav>
-
         <div className={styles.userAuth}>
           {isAuthenticated ? (
             <div className={styles.userInfo}>
               <span className={styles.username}>
-                {user && (user.displayName || user.email)}
+                {user ? user.name || user.email : "Unknown User"}
               </span>
               <button
                 onClick={handleLogout}

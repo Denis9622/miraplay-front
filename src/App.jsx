@@ -18,7 +18,7 @@ const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
 const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
-// const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage.jsx"));
 
 export default function App() {
   const dispatch = useDispatch();
@@ -117,8 +117,7 @@ export default function App() {
             }
           />
 
-          {/* Страница не найдена */}
-          {/* <Route path="*" element={<NotFoundPage />} /> */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </div>

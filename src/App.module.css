@@ -1,0 +1,28 @@
+.app {
+  max-width: 320px;
+  /* padding: 0 20px; */
+  /* min-height: 100vh;  */
+  font-family: inter;
+    margin: 0 auto;
+
+}
+
+@media (min-width: 375px) {
+  .app {
+    max-width: 100%; 
+  }
+}
+
+@media (min-width: 768px) {
+  .app {
+    max-width: 768px;
+    /* padding: 0 32px; */
+  }
+}
+
+@media (min-width: 1440px) {
+  .app {
+    max-width: 1440px;
+    /* padding: 0 112px; */
+  }
+}
