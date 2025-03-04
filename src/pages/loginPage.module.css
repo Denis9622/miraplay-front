@@ -4,7 +4,7 @@
   /* align-items: center; */
   /* height: 100vh; */
   padding: 0px 100px 262px 100px;
-  background-color: #f8fafa;
+  background-color: #F7F8FA;
 
   position: relative;
     /* margin-bottom: 262px; */
@@ -34,7 +34,7 @@
 .pillImage {
   position: absolute;
   top: 122px;
-  right: 745px;
+  left: 516px;
   width: 179px;
   height: 175px;
 }

@@ -1,5 +1,10 @@
 .dashboard {
-  padding: 20px;
+  margin-top: 100px;
+  margin-left: 120px;
+  margin-right: 40px;
+
+    /* background-color: #F7F8FA;  */
+
 }
 
 .grid {

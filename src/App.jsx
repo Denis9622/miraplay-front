@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshToken, logoutUser } from "./redux/auth/authOperations.js";
-import { selectToken } from "./redux/auth/selectors.js";
+import { selectToken, selectIsAuthenticated } from "./redux/auth/selectors.js";
 import { PrivateRoute } from "./components/routes/PrivateRoute.jsx";
 import { RestrictedRoute } from "./components/routes/RestrictedRoute.jsx";
 import Loader from "./components/Loader/Loader.jsx";
@@ -23,7 +23,7 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage.jsx"))
 export default function App() {
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
-
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   useEffect(() => {
     if (token) {
       try {
@@ -52,7 +52,21 @@ export default function App() {
       <Suspense fallback={<Loader loader={true} />}>
         <Routes>
           {/* Общий layout с Header и Sidebar */}
-          <Route path="/" element={<SharedLayout />}>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute
+                redirectTo="/login"
+                component={<SharedLayout isAuthenticated={isAuthenticated} />}
+              />
+            }
+          >
+            {" "}
+            
+            <Route
+              index
+              element={<PrivateRoute component={<DashboardPage />} />}
+            />
             <Route
               path="/dashboard"
               element={

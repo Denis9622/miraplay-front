@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/auth/authOperations";
 import { useNavigate, NavLink } from "react-router-dom";
-import SignIn from "../../pages/LoginPage";
-import SignUp from "../../pages/SignupPage";
 import styles from "./Header.module.css";
- import Logo from "../assets/logo.svg";
+import Logo from "../assets/authenticatedLogo.svg"; // Логотип
 
 function Header() {
   const dispatch = useDispatch();
@@ -14,78 +11,46 @@ function Header() {
   const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const [isSignUpOpen, setSignUpOpen] = useState(false);
-  const [isSignInOpen, setSignInOpen] = useState(false);
-
-  // Логируем Redux-состояние пользователя
-  useEffect(() => {
-    console.log("Redux User:", user);
-    console.log("Redux Authenticated:", isAuthenticated);
-  }, [user, isAuthenticated]);
-
   const handleLogout = async () => {
-    console.log("Logout button clicked");
     await dispatch(logoutUser());
-    console.log("User has been logged out");
     navigate("/login");
   };
 
   return (
-    <>
-      <header className={styles.header}>
-        <img src={Logo} alt="Logo" className={styles.logo} />{" "}
-        <h1 className={styles.logo}>
-          <NavLink to="/">Medicine Store</NavLink>
-        </h1>
+    <header className={styles.header}>
+      <NavLink to={isAuthenticated ? "/" : "/login"}>
+        <img src={Logo} alt="Logo" className={styles.logoImg} />
+      </NavLink>
+      <>
         <nav className={styles.nav}>
-          <ul className={styles.ulclass}>
+          <ul className={styles.ulClass}>
             <li>
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  isActive ? styles.navLinkActive : styles.navLink
-                }
-              >
-                Dashboard
+              <NavLink to="/" className={styles.logotxt}>
+                Medicine Store
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/dashboard" className={styles.navLink}>
+                Dashboard{" | "}
+                <span className={styles.username}>
+                  {user?.email || "No Email"}
+                </span>
               </NavLink>
             </li>
           </ul>
         </nav>
         <div className={styles.userAuth}>
-          {isAuthenticated ? (
-            <div className={styles.userInfo}>
-              <span className={styles.username}>
-                {user ? user.name || user.email : "Unknown User"}
-              </span>
-              <button
-                onClick={handleLogout}
-                className={`${styles.linkAuth} ${styles.logoutUserButton}`}
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <>
-              <button
-                onClick={() => setSignInOpen(true)}
-                className={styles.linkAuth}
-              >
-                Log In
-              </button>
-              <button
-                onClick={() => setSignUpOpen(true)}
-                className={styles.linkAuth}
-              >
-                Registration
-              </button>
-            </>
-          )}
+          <button
+            onClick={handleLogout}
+            className={`${styles.linkAuth} ${styles.logoutUserButton}`}
+          >
+            <svg className={styles.icon}>
+              <use href="/sprite.svg#logout"></use>
+            </svg>
+          </button>
         </div>
-      </header>
-
-      {isSignInOpen && <SignIn onClose={() => setSignInOpen(false)} />}
-      {isSignUpOpen && <SignUp onClose={() => setSignUpOpen(false)} />}
-    </>
+      </>
+    </header>
   );
 }
 

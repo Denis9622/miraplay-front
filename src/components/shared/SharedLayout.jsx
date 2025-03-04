@@ -6,10 +6,14 @@ import css from "./sharedLayout.module.css";
 export const SharedLayout = () => {
   return (
     <div className={css.layout}>
-      <Header />
+      <header className={css.header}>
+        <Header />
+      </header>
       <div className={css.content}>
-        <Sidebar />
-        <main>
+        <aside className={css.sidebar}>
+          <Sidebar />
+        </aside>
+        <main className={css.main}>
           <Outlet />
         </main>
       </div>
