@@ -93,6 +93,15 @@ const SuppliersPage = () => {
             setNewSupplier({ ...newSupplier, phone: e.target.value })
           }
         />
+        <input
+          type="number"
+          placeholder="Сумма закупки"
+          value={newSupplier.amount}
+          onChange={(e) =>
+            setNewSupplier({ ...newSupplier, amount: Number(e.target.value) })
+          }
+        />
+
         <button onClick={() => dispatch(addSupplier(newSupplier))}>
           Add Supplier
         </button>

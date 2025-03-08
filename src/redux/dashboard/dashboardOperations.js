@@ -34,14 +34,36 @@ export const fetchRecentCustomers = createAsyncThunk(
 // 📌 **Получение доходов и расходов**
 export const fetchIncomeExpenses = createAsyncThunk(
   "dashboard/fetchIncomeExpenses",
-  async ({ startDate, endDate }, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("/dashboard/income-expenses", {
-        params: { startDate, endDate },
-      });
+      const response = await axios.get("/dashboard/income-expenses");
+      console.log("Ответ от API:", response.data); // Логируем ответ
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data || "Ошибка загрузки данных");
+      return rejectWithValue(
+        error.response?.data || "Ошибка загрузки транзакций"
+      );
+    }
+  }
+);
+
+
+
+
+// 📌 **Получение списка клиентов с затратами**
+export const fetchCustomersWithSpent = createAsyncThunk(
+  "dashboard/fetchCustomersWithSpent",
+  async (_, { rejectWithValue }) => {
+    try {
+      console.log("Fetching customers with spent..."); // Лог перед запросом
+      const response = await axios.get("/dashboard/customers-with-spent");
+      console.log("Customers with Spent:", response.data); // Лог после получения данных
+      return response.data;
+    } catch (error) {
+      console.log("Fetch customers with spent error:", error); // Лог ошибок
+      return rejectWithValue(
+        error.response?.data || "Ошибка загрузки клиентов с затратами"
+      );
     }
   }
 );

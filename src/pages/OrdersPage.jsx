@@ -6,13 +6,22 @@ import {
   updateOrder,
   deleteOrder,
 } from "../redux/orders/ordersOperations";
+import { fetchCustomers } from "../redux/customers/customersOperations";
 import styles from "./ordersPage.module.css";
 
 const OrdersPage = () => {
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.orders);
+  const {
+    items: orders,
+    loading,
+    error,
+  } = useSelector((state) => state.orders);
+  const customers = useSelector((state) => state.customers.items);
+  const customersLoading = useSelector((state) => state.customers.loading);
+  const customersError = useSelector((state) => state.customers.error);
+
   const [newOrder, setNewOrder] = useState({
-    userInfo: "",
+    customerId: "",
     address: "",
     products: "",
     orderDate: "",
@@ -23,13 +32,21 @@ const OrdersPage = () => {
 
   useEffect(() => {
     dispatch(fetchOrders());
+    dispatch(fetchCustomers());
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log("Orders:", orders);
+    console.log("Loading Orders:", loading);
+    console.log("Orders Error:", error);
+    console.log("Customers:", customers);
+  }, [orders, loading, error, customers]);
 
   // Добавление заказа
   const handleAddOrder = () => {
     dispatch(addOrder({ ...newOrder, products: newOrder.products.split(",") }));
     setNewOrder({
-      userInfo: "",
+      customerId: "",
       address: "",
       products: "",
       orderDate: "",
@@ -55,16 +72,29 @@ const OrdersPage = () => {
     <div className={styles.ordersPage}>
       <h1>Orders</h1>
 
+      {customersLoading && <p>Loading customers...</p>}
+      {customersError && <p className={styles.error}>{customersError}</p>}
+
       {/* Форма добавления заказа */}
       <div className={styles.form}>
-        <input
-          type="text"
-          placeholder="User Info"
-          value={newOrder.userInfo}
+        <select
+          value={newOrder.customerId}
           onChange={(e) =>
-            setNewOrder({ ...newOrder, userInfo: e.target.value })
+            setNewOrder({ ...newOrder, customerId: e.target.value })
           }
-        />
+        >
+          <option value="">Select Customer</option>
+          {customers && customers.length > 0 ? (
+            customers.map((customer) => (
+              <option key={customer._id} value={customer._id}>
+                {customer.name}
+              </option>
+            ))
+          ) : (
+            <option disabled>Loading customers...</option>
+          )}
+        </select>
+
         <input
           type="text"
           placeholder="Address"
@@ -107,7 +137,6 @@ const OrdersPage = () => {
         </select>
         <button onClick={handleAddOrder}>Add Order</button>
       </div>
-
       {/* Форма редактирования заказа */}
       {editOrder && (
         <div className={styles.form}>
@@ -170,12 +199,13 @@ const OrdersPage = () => {
         </p>
       )}
       <ul>
-        {items.length === 0 ? (
+        {orders.length === 0 ? (
           <p>No orders found</p>
         ) : (
-          items.map((order) => (
+          orders.map((order) => (
             <li key={order._id}>
-              {order.userInfo} - {order.address} - {order.products.join(", ")} -{" "}
+              {order.customer?.name || order.userInfo} - {order.address} -{" "}
+              {order.products.join(", ")} -{" "}
               {new Date(order.orderDate).toLocaleString()} - ${order.price} -{" "}
               {order.status}
               <button onClick={() => setEditOrder(order)}>Edit</button>

@@ -1,27 +1,30 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://admindashboard-back-qth7.onrender.com/api";
+axios.defaults.baseURL = "http://localhost:3000/api";
 
 const getAuthHeader = () => {
   const token = localStorage.getItem("token");
   return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 };
 
-// 📌 GET: Получить всех клиентов
 export const fetchCustomers = createAsyncThunk(
   "customers/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("/customers", getAuthHeader());
+      console.log("Fetching customers..."); // ✅ Проверяем, что запрос отправляется
+      const response = await axios.get("/customers"); // ✅ Должно быть `/customers`, а не `/orders`
+      console.log("Customers fetched:", response.data); // ✅ Проверяем, что данные приходят
       return response.data;
     } catch (error) {
+      console.error("Fetch customers error:", error);
       return rejectWithValue(
         error.response?.data || "Ошибка загрузки клиентов"
       );
     }
   }
 );
+
 
 // 📌 POST: Добавить клиента
 export const addCustomer = createAsyncThunk(

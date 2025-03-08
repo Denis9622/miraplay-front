@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchRecentCustomers } from "../../redux/dashboard/dashboardOperations";
+import { fetchCustomersWithSpent } from "../../redux/dashboard/dashboardOperations";
 import styles from "./recentCustomers.module.css";
 
 const RecentCustomers = () => {
@@ -10,33 +10,44 @@ const RecentCustomers = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchRecentCustomers());
+    dispatch(fetchCustomersWithSpent());
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log("Recent Customers:", recentCustomers); // Логирование данных клиентов
+  }, [recentCustomers]);
 
   if (loading) return <p>Loading customers...</p>;
   if (error) return <p className={styles.error}>{error}</p>;
 
   return (
-    <div className={styles.recentCustomers}>
+    <div className={styles.containerCustomers}>
       <h3>Recent Customers</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Spent</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recentCustomers.map((customer, index) => (
-            <tr key={index}>
-              <td>{customer.name}</td>
-              <td>{customer.email}</td>
-              <td>${customer.spent}</td>
+      <div className={styles.recentCustomers}>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Spent</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {recentCustomers.map((customer, index) => (
+              <tr key={index}>
+                <td>{customer.name}</td>
+                <td>{customer.email}</td>
+                <td>
+                  $
+                  {customer.totalSpent
+                    ? customer.totalSpent.toFixed(2)
+                    : "0.00"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
