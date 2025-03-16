@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { refreshToken, logoutUser } from "./redux/auth/authOperations.js";
-import { selectToken, selectIsAuthenticated } from "./redux/auth/selectors.js";
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsAuthenticated } from "./redux/auth/selectors.js";
 import { PrivateRoute } from "./components/routes/PrivateRoute.jsx";
 import { RestrictedRoute } from "./components/routes/RestrictedRoute.jsx";
 import Loader from "./components/Loader/Loader.jsx";
 import { SharedLayout } from "./components/shared/SharedLayout.jsx";
+import { setUser, clearAuthState } from "./redux/auth/authSlice";
 
 import css from "./App.module.css";
 
@@ -21,37 +21,25 @@ const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage.jsx"));
 
 export default function App() {
-  const dispatch = useDispatch();
-  const token = useSelector(selectToken);
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  useEffect(() => {
-    if (token) {
-      try {
-        const tokenParts = token.split(".");
-        if (tokenParts.length !== 3) {
-          throw new Error("Invalid token structure");
-        }
+   const dispatch = useDispatch();
 
-        const decodedPayload = JSON.parse(atob(tokenParts[1]));
-        const tokenExpiration = decodedPayload.exp * 1000;
+   useEffect(() => {
+     const token = localStorage.getItem("token");
+     const user = localStorage.getItem("user");
 
-        if (Date.now() >= tokenExpiration) {
-          dispatch(refreshToken());
-        }
-      } catch (error) {
-        console.error("Ошибка при обработке токена:", error);
-        dispatch(logoutUser());
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }
-    }
-  }, [dispatch, token]);
+     if (token && user) {
+       dispatch(setUser(JSON.parse(user))); // Восстанавливаем данные пользователя
+     } else {
+       dispatch(clearAuthState());
+     }
+   }, [dispatch]);
+  
 
   return (
     <div className={css.app}>
       <Suspense fallback={<Loader loader={true} />}>
         <Routes>
-          {/* Общий layout с Header и Sidebar */}
           <Route
             path="/"
             element={
@@ -60,9 +48,7 @@ export default function App() {
                 component={<SharedLayout isAuthenticated={isAuthenticated} />}
               />
             }
-          >
-            {" "}
-            
+          >            
             <Route
               index
               element={<PrivateRoute component={<DashboardPage />} />}
@@ -110,7 +96,6 @@ export default function App() {
               }
             />
           </Route>
-
           {/* Авторизация */}
           <Route
             path="/login"

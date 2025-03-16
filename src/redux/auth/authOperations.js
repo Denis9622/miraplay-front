@@ -1,9 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import { setUser } from "./authSlice.js"; 
 
 
-axios.defaults.baseURL = "http://localhost:3000/api/login/api";
+axios.defaults.baseURL = "http://localhost:3000/api";
 axios.defaults.withCredentials = true; // Добавлено для отправки куки с запросом
 
 // 📌 Функция для получения заголовков с токеном
@@ -41,8 +40,6 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
-
-// 📌 Логин
 
 
 // 📌 Логин пользователя

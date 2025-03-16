@@ -1,22 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-axios.defaults.baseURL = "http://localhost:3000/api";
-
-const getAuthHeader = () => {
-  const token = localStorage.getItem("accessToken");
-  return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-};
-
+import api from "../axiosInstance"; // Используем api вместо axios
 
 // 📌 GET: Получить все заказы
 export const fetchOrders = createAsyncThunk(
   "orders/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("/orders", {
-        headers: getAuthHeader().headers,
-      });
+      const response = await api.get("/orders"); // Используем api
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Ошибка загрузки заказов");
@@ -29,9 +19,7 @@ export const addOrder = createAsyncThunk(
   "orders/add",
   async (orderData, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/orders", orderData, {
-        headers: getAuthHeader().headers,
-      });
+      const response = await api.post("/orders", orderData); // api вместо axios
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -46,9 +34,7 @@ export const updateOrder = createAsyncThunk(
   "orders/update",
   async ({ id, orderData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/orders/${id}`, orderData, {
-        headers: getAuthHeader().headers,
-      });
+      const response = await api.put(`/orders/${id}`, orderData); // api вместо axios
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -63,7 +49,7 @@ export const deleteOrder = createAsyncThunk(
   "orders/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`/orders/${id}`, { headers: getAuthHeader().headers });
+      await api.delete(`/orders/${id}`); // api вместо axios
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Ошибка удаления заказа");

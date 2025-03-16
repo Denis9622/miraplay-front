@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../redux/products/productsOperations.js";
-import styles from "./ProductModal.module.css";
+import styles from "./productModal.module.css";
 
 const AddProductModal = ({ onClose }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
+    category: "Medicine", // Устанавливаем значение по умолчанию
     stock: 0,
     suppliers: "",
     price: 0,
@@ -33,17 +33,23 @@ const AddProductModal = ({ onClose }) => {
           <input
             type="text"
             name="name"
-            placeholder="Product Name"
+            placeholder="Product Info"
             onChange={handleChange}
             required
           />
-          <input
-            type="text"
+          {/* Выпадающий список для категорий */}
+          <select
             name="category"
-            placeholder="Category"
+            value={formData.category}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="Medicine">Medicine</option>
+            <option value="Heart">Heart</option>
+            <option value="Head">Head</option>
+            <option value="Hand">Hand</option>
+            <option value="Leg">Leg</option>
+          </select>
           <input
             type="number"
             name="stock"

@@ -1,0 +1,148 @@
+/* -------------------------
+   Global Table Styles
+------------------------- */
+
+.tableContainer {
+  padding: 16px; /* Универсальный отступ вокруг таблицы */
+  border: 1px solid rgba(29, 30, 33, 0.1);
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse; /* Убираем промежутки между ячейками */
+  box-shadow: none; /* Убираем внешнюю тень */
+}
+
+.table th,
+.table td {
+  border: 1px solid rgba(29, 30, 33, 0.1); /* Внутренние границы */
+  text-align: left; /* Выравнивание текста по левому краю */
+  padding: 12px 16px; /* Добавляем больше отступов для удобства */
+}
+
+.table th {
+  color: #1d1e2166; 
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.table td {
+  color: #1d1e21; 
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+/* -------------------------
+   Alternate Row Styles
+------------------------- */
+
+
+
+.noRecords {
+  text-align: center;
+  font-size: 16px;
+  color: #999;
+  padding: 20px;
+}
+
+/* -------------------------
+   Table Borders
+------------------------- */
+
+/* Убираем ненужные границы */
+.table tr:first-child th {
+  border-top: none;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr td:first-child,
+.table tr th:first-child {
+  border-left: none;
+}
+
+.table tr td:last-child,
+.table tr th:last-child {
+  border-right: none;
+}
+
+/* -------------------------
+   Header (H3) Styles
+------------------------- */
+
+.tableTitle {
+  padding: 16px;
+  margin: 0;
+  color: #1d1e21;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
+  border-radius: 8px 8px 0 0;
+  text-align: center;
+}
+
+/* -------------------------
+   Button Group (Actions)
+------------------------- */
+
+.actionsCell {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+.buttonBox button:first-child{
+  background-color: none;
+}
+
+.editButton,
+.deleteButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* Круглые кнопки */
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.editButton {
+  border: 1px solid rgba(89, 177, 122, 0.5); 
+}
+
+/* .editButton:hover {
+  background-color: rgba(89, 177, 122, 0.2);
+} */
+
+.deleteButton {
+  border: 1px solid rgba(232, 80, 80, 0.5); 
+}
+
+/* .deleteButton:hover {
+  background-color: rgba(232, 80, 80, 0.2); 
+} */
+
+/* -------------------------
+   Icon Styles
+------------------------- */
+
+.iconEdit,
+.iconDelete {
+  width: 16px;
+  height: 16px;
+  /* fill: currentColor;  */
+}
+
+.buttonBox {
+  display: flex; 
+  gap: 8px; 
+
+}

@@ -7,20 +7,21 @@ import {
   deleteOrder,
 } from "../redux/orders/ordersOperations";
 import { fetchCustomers } from "../redux/customers/customersOperations";
+import OrdersTable from "../components/orders/OrdersTable";
 import styles from "./ordersPage.module.css";
 
 const OrdersPage = () => {
   const dispatch = useDispatch();
+  const { items: orders } = useSelector((state) => state.orders);
   const {
-    items: orders,
-    loading,
-    error,
-  } = useSelector((state) => state.orders);
-  const customers = useSelector((state) => state.customers.items);
-  const customersLoading = useSelector((state) => state.customers.loading);
-  const customersError = useSelector((state) => state.customers.error);
+    items: customers,
+    loading: customersLoading,
+    error: customersError,
+  } = useSelector((state) => state.customers);
 
-  const [newOrder, setNewOrder] = useState({
+  const [filterName, setFilterName] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [orderForm, setOrderForm] = useState({
     customerId: "",
     address: "",
     products: "",
@@ -28,24 +29,61 @@ const OrdersPage = () => {
     price: 0,
     status: "Pending",
   });
-  const [editOrder, setEditOrder] = useState(null);
+  const [editOrderId, setEditOrderId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch orders and customers on component mount
   useEffect(() => {
     dispatch(fetchOrders());
     dispatch(fetchCustomers());
   }, [dispatch]);
 
+  // Filter orders when the filterName changes
   useEffect(() => {
-    console.log("Orders:", orders);
-    console.log("Loading Orders:", loading);
-    console.log("Orders Error:", error);
-    console.log("Customers:", customers);
-  }, [orders, loading, error, customers]);
+    setFilteredOrders(
+      orders.filter((order) =>
+        order.customer?.name
+          ? order.customer.name.toLowerCase().includes(filterName.toLowerCase())
+          : false
+      )
+    );
+  }, [filterName, orders]);
 
-  // Добавление заказа
   const handleAddOrder = () => {
-    dispatch(addOrder({ ...newOrder, products: newOrder.products.split(",") }));
-    setNewOrder({
+    dispatch(
+      addOrder({ ...orderForm, products: orderForm.products.split(",") })
+    );
+    resetOrderForm();
+    setIsModalOpen(false);
+  };
+
+  const handleUpdateOrder = () => {
+    if (editOrderId) {
+      dispatch(updateOrder({ id: editOrderId, orderData: orderForm }));
+      resetOrderForm();
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleEditOrder = (order) => {
+    setOrderForm({
+      customerId: order.customerId,
+      address: order.address,
+      products: order.products.join(","),
+      orderDate: order.orderDate,
+      price: order.price,
+      status: order.status,
+    });
+    setEditOrderId(order._id);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteOrder = (id) => {
+    dispatch(deleteOrder(id));
+  };
+
+  const resetOrderForm = () => {
+    setOrderForm({
       customerId: "",
       address: "",
       products: "",
@@ -53,169 +91,125 @@ const OrdersPage = () => {
       price: 0,
       status: "Pending",
     });
+    setEditOrderId(null);
   };
 
-  // Обновление заказа
-  const handleUpdateOrder = () => {
-    if (editOrder) {
-      dispatch(updateOrder({ id: editOrder._id, orderData: editOrder }));
-      setEditOrder(null);
-    }
-  };
-
-  // Удаление заказа
-  const handleDeleteOrder = (id) => {
-    dispatch(deleteOrder(id));
-  };
 
   return (
     <div className={styles.ordersPage}>
-      <h1>Orders</h1>
-
       {customersLoading && <p>Loading customers...</p>}
       {customersError && <p className={styles.error}>{customersError}</p>}
 
-      {/* Форма добавления заказа */}
-      <div className={styles.form}>
-        <select
-          value={newOrder.customerId}
-          onChange={(e) =>
-            setNewOrder({ ...newOrder, customerId: e.target.value })
-          }
-        >
-          <option value="">Select Customer</option>
-          {customers && customers.length > 0 ? (
-            customers.map((customer) => (
-              <option key={customer._id} value={customer._id}>
-                {customer.name}
-              </option>
-            ))
-          ) : (
-            <option disabled>Loading customers...</option>
-          )}
-        </select>
-
+      <div className={styles.filterContainer}>
         <input
           type="text"
-          placeholder="Address"
-          value={newOrder.address}
-          onChange={(e) =>
-            setNewOrder({ ...newOrder, address: e.target.value })
-          }
+          placeholder="User Name"
+          value={filterName}
+          onChange={(e) => setFilterName(e.target.value)}
+          className={styles.filterInput}
         />
-        <input
-          type="text"
-          placeholder="Products (comma separated)"
-          value={newOrder.products}
-          onChange={(e) =>
-            setNewOrder({ ...newOrder, products: e.target.value })
-          }
-        />
-        <input
-          type="datetime-local"
-          placeholder="Order Date"
-          value={newOrder.orderDate}
-          onChange={(e) =>
-            setNewOrder({ ...newOrder, orderDate: e.target.value })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={newOrder.price}
-          onChange={(e) =>
-            setNewOrder({ ...newOrder, price: Number(e.target.value) })
-          }
-        />
-        <select
-          value={newOrder.status}
-          onChange={(e) => setNewOrder({ ...newOrder, status: e.target.value })}
+        <button className={styles.filterButton}>Filter</button>
+        <button
+          className={styles.openModalButton}
+          onClick={() => setIsModalOpen(true)}
         >
-          <option value="Pending">Pending</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Delivered">Delivered</option>
-        </select>
-        <button onClick={handleAddOrder}>Add Order</button>
+          {editOrderId ? "Edit Order" : "Add Order"}
+        </button>
       </div>
-      {/* Форма редактирования заказа */}
-      {editOrder && (
-        <div className={styles.form}>
-          <input
-            type="text"
-            value={editOrder.userInfo}
-            onChange={(e) =>
-              setEditOrder({ ...editOrder, userInfo: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editOrder.address}
-            onChange={(e) =>
-              setEditOrder({ ...editOrder, address: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editOrder.products}
-            onChange={(e) =>
-              setEditOrder({ ...editOrder, products: e.target.value })
-            }
-          />
-          <input
-            type="datetime-local"
-            value={editOrder.orderDate}
-            onChange={(e) =>
-              setEditOrder({ ...editOrder, orderDate: e.target.value })
-            }
-          />
-          <input
-            type="number"
-            value={editOrder.price}
-            onChange={(e) =>
-              setEditOrder({ ...editOrder, price: Number(e.target.value) })
-            }
-          />
-          <select
-            value={editOrder.status}
-            onChange={(e) =>
-              setEditOrder({ ...editOrder, status: e.target.value })
-            }
-          >
-            <option value="Pending">Pending</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-          </select>
-          <button onClick={handleUpdateOrder}>Update Order</button>
+
+      {isModalOpen && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modal}>
+            <button
+              className={styles.modalClose}
+              onClick={() => {
+                resetOrderForm();
+                setIsModalOpen(false);
+              }}
+            >
+              ✖
+            </button>
+            <h2>{editOrderId ? "Edit Order" : "Add Order"}</h2>
+            <div className={styles.form}>
+              <select
+                value={orderForm.customerId}
+                onChange={(e) =>
+                  setOrderForm({ ...orderForm, customerId: e.target.value })
+                }
+              >
+                <option value="">Select Customer</option>
+                {customers.map((customer) => (
+                  <option key={customer._id} value={customer._id}>
+                    {customer.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                placeholder="Address"
+                value={orderForm.address}
+                onChange={(e) =>
+                  setOrderForm({ ...orderForm, address: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Products (comma separated)"
+                value={orderForm.products}
+                onChange={(e) =>
+                  setOrderForm({ ...orderForm, products: e.target.value })
+                }
+              />
+
+              <input
+                type="datetime-local"
+                value={
+                  orderForm.orderDate
+                    ? new Date(orderForm.orderDate).toISOString().slice(0, 16) // Если есть дата, используем её
+                    : new Date().toISOString().slice(0, 16) // Если нет даты, берём текущую
+                }
+                onChange={
+                  (e) =>
+                    setOrderForm({ ...orderForm, orderDate: e.target.value }) // Обновляем состояние
+                }
+              />
+
+              <input
+                type="number"
+                placeholder="Price"
+                value={orderForm.price}
+                onChange={(e) =>
+                  setOrderForm({ ...orderForm, price: Number(e.target.value) })
+                }
+              />
+              <select
+                value={orderForm.status}
+                onChange={(e) =>
+                  setOrderForm({ ...orderForm, status: e.target.value })
+                }
+              >
+                <option value="Pending">Pending</option>
+                <option value="Shipped">Processing</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Delivered">Confirmed</option>
+                <option value="Delivered">Cancelled</option>
+              </select>
+              <button
+                onClick={editOrderId ? handleUpdateOrder : handleAddOrder}
+                className={styles.addButton}
+              >
+                {editOrderId ? "Update Order" : "Add Order"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Список заказов */}
-      {loading && <p>Loading...</p>}
-      {error && (
-        <p className={styles.error}>
-          {typeof error === "string"
-            ? error
-            : error?.message || "Произошла ошибка"}
-        </p>
-      )}
-      <ul>
-        {orders.length === 0 ? (
-          <p>No orders found</p>
-        ) : (
-          orders.map((order) => (
-            <li key={order._id}>
-              {order.customer?.name || order.userInfo} - {order.address} -{" "}
-              {order.products.join(", ")} -{" "}
-              {new Date(order.orderDate).toLocaleString()} - ${order.price} -{" "}
-              {order.status}
-              <button onClick={() => setEditOrder(order)}>Edit</button>
-              <button onClick={() => handleDeleteOrder(order._id)}>
-                Delete
-              </button>
-            </li>
-          ))
-        )}
-      </ul>
+      <OrdersTable
+        orders={filteredOrders}
+        handleEditOrder={handleEditOrder}
+        handleDeleteOrder={handleDeleteOrder}
+      />
     </div>
   );
 };

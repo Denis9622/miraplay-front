@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateProduct } from "../../redux/products/productsOperations.js";
-import styles from "./ProductModal.module.css";
+import styles from "./productModal.module.css";
 
 const EditProductModal = ({ product, onClose }) => {
   const dispatch = useDispatch();

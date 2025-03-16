@@ -13,8 +13,6 @@ const IncomeExpenses = () => {
     dispatch(fetchIncomeExpenses());
   }, [dispatch]);
 
-  console.log("Transactions received:", transactions); // Проверяем данные
-
   if (loading) return <p>Loading transactions...</p>;
   if (error) return <p className={styles.error}>{error}</p>;
 
@@ -35,7 +33,7 @@ const IncomeExpenses = () => {
                 {transaction.type}
               </span>
               <span className={styles.transactionName}>
-                {transaction.name || "Unknown"}
+                {transaction.name || "Unknown"} {/* Отображаем поле name */}
               </span>
               <span
                 className={styles.transactionAmount}

@@ -1,14 +1,15 @@
 .productsPage {
-  /* padding: 20px; */
-    margin-top: 100px;
+      margin-top: 155px;
   margin-left: 120px;
-    margin-right: 40px;
+  margin-right: 40px;
 
 }
-
-h1 {
-  margin-bottom: 15px;
+.filterContainer {
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
+
 
 .header {
   display: flex;
@@ -16,48 +17,56 @@ h1 {
   margin-bottom: 15px;
 }
 
-.filterInput {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
-  max-width: 300px;
+.searchInput {
+  padding: 13px 18px;
+  margin-right: 10px;
+  border: 1px solid rgba(29, 30, 33, 0.1);
+  border-radius: 60px;
+  width: 224px;
+  box-shadow: 0px -1px 5px 0px rgba(71, 71, 71, 0.05);
 }
-
-.addButton {
-  background-color: #2a9d8f;
+.filterButton {
+  display: flex;
+  align-items: center;
+  padding: 13px 30px;
+  background-color: rgba(89, 177, 122, 1);
   color: white;
-  padding: 8px 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 60px;
   cursor: pointer;
 }
 
+
+.addButton {
+  display: flex;
+  
+  padding: 13px 30px;
+  background-color: rgba(89, 177, 122, 1);
+  color: white;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 32px;
+
+
+
+}
+
 .addButton:hover {
-  background-color: #21867a;
+  background-color: #45a049;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-}
 
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-}
-
-th {
-  background: #f5f5f5;
-}
 
 .noProducts {
   text-align: center;
   padding: 15px;
   color: #777;
+} 
+
+.iconAdd{
+  width: 16px;
+  height: 16px;
+  fill: white;
 }

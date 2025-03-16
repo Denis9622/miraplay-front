@@ -88,3 +88,10 @@
 .recentCustomers table tr th:last-child {
   border-right: none; /* Убираем правую границу */
 }
+
+.recentCustomers th{
+  background: none;
+}
+.recentCustomers table{
+  box-shadow: none;
+}
