@@ -1,13 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsAuthenticated } from "./redux/auth/selectors.js";
-import { PrivateRoute } from "./components/routes/PrivateRoute.jsx";
-import { RestrictedRoute } from "./components/routes/RestrictedRoute.jsx";
-import Loader from "./components/Loader/Loader.jsx";
-import { SharedLayout } from "./components/shared/SharedLayout.jsx";
+import { selectIsAuthenticated } from "./redux/auth/selectors";
 import { setUser, clearAuthState } from "./redux/auth/authSlice";
-
+import PrivateRoute from "./components/routes/PrivateRoute";
+import RestrictedRoute from "./components/routes/RestrictedRoute";
+import SharedLayout from "./components/shared/SharedLayout";
+import Loader from "./components/Loader/Loader.jsx";
 import css from "./App.module.css";
 
 // Ленивое подключение страниц
@@ -18,23 +17,24 @@ const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
 const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage.jsx"));
+const NotFoundPage = lazy(() =>
+  import("./pages/NotFoundPage/NotFoundPage.jsx")
+);
 
 export default function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-   useEffect(() => {
-     const token = localStorage.getItem("token");
-     const user = localStorage.getItem("user");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
 
-     if (token && user) {
-       dispatch(setUser(JSON.parse(user))); // Восстанавливаем данные пользователя
-     } else {
-       dispatch(clearAuthState());
-     }
-   }, [dispatch]);
-  
+    if (token && user) {
+      dispatch(setUser(JSON.parse(user))); // Восстанавливаем данные пользователя
+    } else {
+      dispatch(clearAuthState());
+    }
+  }, [dispatch]);
 
   return (
     <div className={css.app}>
@@ -48,7 +48,7 @@ export default function App() {
                 component={<SharedLayout isAuthenticated={isAuthenticated} />}
               />
             }
-          >            
+          >
             <Route
               index
               element={<PrivateRoute component={<DashboardPage />} />}

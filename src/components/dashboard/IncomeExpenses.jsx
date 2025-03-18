@@ -33,7 +33,7 @@ const IncomeExpenses = () => {
                 {transaction.type}
               </span>
               <span className={styles.transactionName}>
-                {transaction.name || "Unknown"} {/* Отображаем поле name */}
+                {transaction.name || "Unknown"} 
               </span>
               <span
                 className={styles.transactionAmount}

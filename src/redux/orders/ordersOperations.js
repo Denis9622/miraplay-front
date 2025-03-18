@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../axiosInstance"; // Используем api вместо axios
+import api from "../axiosInstance"; // Используем наш api
 
-// 📌 GET: Получить все заказы
+// 📌 Получение заказов
 export const fetchOrders = createAsyncThunk(
   "orders/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/orders"); // Используем api
+      const response = await api.get("/orders");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Ошибка загрузки заказов");

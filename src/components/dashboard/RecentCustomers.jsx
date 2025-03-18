@@ -14,7 +14,6 @@ const RecentCustomers = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Recent Customers:", recentCustomers); // Логирование данных клиентов
   }, [recentCustomers]);
 
   if (loading) return <p>Loading customers...</p>;

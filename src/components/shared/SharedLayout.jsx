@@ -3,7 +3,7 @@ import Header from "./Header.jsx";
 import Sidebar from "./Sidebar.jsx";
 import css from "./sharedLayout.module.css";
 
-export const SharedLayout = () => {
+const SharedLayout = () => {
   return (
     <div className={css.layout}>
       <header className={css.header}>
@@ -20,3 +20,5 @@ export const SharedLayout = () => {
     </div>
   );
 };
+
+export default SharedLayout;

@@ -6,159 +6,166 @@ import {
   updateSupplier,
   deleteSupplier,
 } from "../redux/suppliers/suppliersSlice";
+import SuppliersTable from "../components/suppliers/SuppliersTable";
 import styles from "./suppliersPage.module.css";
 
 const SuppliersPage = () => {
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.suppliers);
-  const [filter, setFilter] = useState("");
-  const [newSupplier, setNewSupplier] = useState({
+  const {
+    items: suppliers,
+    loading,
+    error,
+  } = useSelector((state) => state.suppliers);
+  const [filterName, setFilterName] = useState("");
+  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
+  const [supplierForm, setSupplierForm] = useState({
     name: "",
-    company: "",
+    email: "",
     address: "",
     phone: "",
   });
-  const [editSupplier, setEditSupplier] = useState(null);
+  const [editSupplierId, setEditSupplierId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchSuppliers())
-      .unwrap()
-      .catch((error) => {
-        console.error("Failed to fetch suppliers:", error);
-      });
+    dispatch(fetchSuppliers());
   }, [dispatch]);
 
-  // Filter suppliers
-  const filteredSuppliers = items.filter((supplier) =>
-    supplier.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  // Update supplier
-  const handleUpdateSupplier = () => {
-    if (editSupplier) {
-      dispatch(
-        updateSupplier({ id: editSupplier._id, supplierData: editSupplier })
+  useEffect(() => {
+    setFilteredSuppliers(
+      suppliers.filter((supplier) =>
+        supplier.name.toLowerCase().includes(filterName.toLowerCase())
       )
-        .unwrap()
-        .then(() => {
-          dispatch(fetchSuppliers());
-        });
-      setEditSupplier(null); // Reset editing mode
+    );
+  }, [filterName, suppliers]);
+
+  const handleAddSupplier = () => {
+    dispatch(addSupplier(supplierForm));
+    resetSupplierForm();
+    setIsModalOpen(false);
+  };
+
+  const handleUpdateSupplier = () => {
+    if (editSupplierId) {
+      dispatch(
+        updateSupplier({ id: editSupplierId, supplierData: supplierForm })
+      );
+      resetSupplierForm();
+      setIsModalOpen(false);
     }
+  };
+
+  const handleEditSupplier = (supplier) => {
+    setSupplierForm({
+      name: supplier.name,
+      email: supplier.email,
+      address: supplier.address,
+      phone: supplier.phone,
+    });
+    setEditSupplierId(supplier._id);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteSupplier = (id) => {
+    dispatch(deleteSupplier(id));
+  };
+
+  const resetSupplierForm = () => {
+    setSupplierForm({
+      name: "",
+      email: "",
+      address: "",
+      phone: "",
+    });
+    setEditSupplierId(null);
   };
 
   return (
     <div className={styles.suppliersPage}>
-      <h1>Suppliers</h1>
+      {loading && <p>Loading suppliers...</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
-      {/* Filter */}
-      <input
-        type="text"
-        placeholder="Filter by name"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
-
-      {/* Add Supplier Form */}
-      <div className={styles.form}>
+      <div className={styles.filterContainer}>
         <input
           type="text"
-          placeholder="Name"
-          value={newSupplier.name}
-          onChange={(e) =>
-            setNewSupplier({ ...newSupplier, name: e.target.value })
-          }
+          placeholder="Filter by name"
+          value={filterName}
+          onChange={(e) => setFilterName(e.target.value)}
+          className={styles.filterInput}
         />
-        <input
-          type="text"
-          placeholder="Company"
-          value={newSupplier.company}
-          onChange={(e) =>
-            setNewSupplier({ ...newSupplier, company: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={newSupplier.address}
-          onChange={(e) =>
-            setNewSupplier({ ...newSupplier, address: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Phone"
-          value={newSupplier.phone}
-          onChange={(e) =>
-            setNewSupplier({ ...newSupplier, phone: e.target.value })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Сумма закупки"
-          value={newSupplier.amount}
-          onChange={(e) =>
-            setNewSupplier({ ...newSupplier, amount: Number(e.target.value) })
-          }
-        />
-
-        <button onClick={() => dispatch(addSupplier(newSupplier))}>
-          Add Supplier
+        <button className={styles.filterButton}>Filter</button>
+        <button
+          className={styles.openModalButton}
+          onClick={() => setIsModalOpen(true)}
+        >
+          {editSupplierId ? "Edit Supplier" : "Add Supplier"}
         </button>
       </div>
 
-      {/* Edit Supplier Form */}
-      {editSupplier && (
-        <div className={styles.form}>
-          <h3>Edit Supplier</h3>
-          <input
-            type="text"
-            value={editSupplier.name}
-            onChange={(e) =>
-              setEditSupplier({ ...editSupplier, name: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editSupplier.company}
-            onChange={(e) =>
-              setEditSupplier({ ...editSupplier, company: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editSupplier.address}
-            onChange={(e) =>
-              setEditSupplier({ ...editSupplier, address: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editSupplier.phone}
-            onChange={(e) =>
-              setEditSupplier({ ...editSupplier, phone: e.target.value })
-            }
-          />
-          <button onClick={handleUpdateSupplier}>Update Supplier</button>
-          <button onClick={() => setEditSupplier(null)}>Cancel</button>
+      {isModalOpen && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modal}>
+            <button
+              className={styles.modalClose}
+              onClick={() => {
+                resetSupplierForm();
+                setIsModalOpen(false);
+              }}
+            >
+              ✖
+            </button>
+            <h2>{editSupplierId ? "Edit Supplier" : "Add Supplier"}</h2>
+            <div className={styles.form}>
+              <input
+                type="text"
+                placeholder="Name"
+                value={supplierForm.name}
+                onChange={(e) =>
+                  setSupplierForm({ ...supplierForm, name: e.target.value })
+                }
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={supplierForm.email}
+                onChange={(e) =>
+                  setSupplierForm({ ...supplierForm, email: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Address"
+                value={supplierForm.address}
+                onChange={(e) =>
+                  setSupplierForm({ ...supplierForm, address: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Phone"
+                value={supplierForm.phone}
+                onChange={(e) =>
+                  setSupplierForm({ ...supplierForm, phone: e.target.value })
+                }
+              />
+              <button
+                onClick={
+                  editSupplierId ? handleUpdateSupplier : handleAddSupplier
+                }
+                className={styles.addButton}
+              >
+                {editSupplierId ? "Update Supplier" : "Add Supplier"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Suppliers Table */}
-      {loading && <p>Loading...</p>}
-      {error && <p className={styles.error}>{error}</p>}
-      <ul>
-        {filteredSuppliers.map((supplier) => (
-          <li key={supplier._id}>
-            {supplier.name} - {supplier.company} - {supplier.address} -{" "}
-            {supplier.phone}
-            <button onClick={() => setEditSupplier(supplier)}>Edit</button>
-            <button onClick={() => dispatch(deleteSupplier(supplier._id))}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      <SuppliersTable
+        suppliers={filteredSuppliers}
+        handleEditSupplier={handleEditSupplier}
+        handleDeleteSupplier={handleDeleteSupplier}
+      />
     </div>
   );
 };

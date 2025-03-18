@@ -1,41 +1,39 @@
-import styles from "./productTable.module.css";
+import styles from "./suppliersTable.module.css";
 
-const ProductTable = ({ products, handleEditProduct, handleDeleteProduct }) => {
+const SuppliersTable = ({ suppliers, handleEditSupplier, handleDeleteSupplier }) => {
   return (
-    <div className={styles.productTable}>
-      <h3>All Products</h3>
-      <div className={styles.recentProducts}>
+    <div className={styles.suppliersTable}>
+      <h3>All Suppliers</h3>
+      <div className={styles.recentSuppliers}>
         <table>
           <thead>
             <tr>
-              <th>Product Info</th>
-              <th>Category</th>
-              <th>Stock</th>
-              <th>Suppliers</th>
-              <th>Price</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Phone</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {products.length === 0 ? (
+            {suppliers.length === 0 ? (
               <tr>
-                <td colSpan="6" className={styles.noProducts}>
-                  No products found
+                <td colSpan="5" className={styles.noSuppliers}>
+                  No suppliers found
                 </td>
               </tr>
             ) : (
-              products.map((product) => (
-                <tr key={product._id}>
-                  <td>{product.name}</td>
-                  <td>{product.category}</td>
-                  <td>{product.stock}</td>
-                  <td>{product.suppliers.join(", ")}</td>
-                  <td>${product.price.toFixed(2)}</td>
+              suppliers.map((supplier) => (
+                <tr key={supplier._id}>
+                  <td>{supplier.name}</td>
+                  <td>{supplier.email}</td>
+                  <td>{supplier.address}</td>
+                  <td>{supplier.phone}</td>
                   <td>
                     <div className={styles.buttonBox}>
                       <button
                         className={styles.editButton}
-                        onClick={() => handleEditProduct(product)}
+                        onClick={() => handleEditSupplier(supplier)} // Edit supplier
                       >
                         <svg className={styles.iconEdit}>
                           <use href="/public/sprite.svg#icon-edit"></use>
@@ -43,7 +41,7 @@ const ProductTable = ({ products, handleEditProduct, handleDeleteProduct }) => {
                       </button>
                       <button
                         className={styles.deleteButton}
-                        onClick={() => handleDeleteProduct(product._id)}
+                        onClick={() => handleDeleteSupplier(supplier._id)} // Delete supplier
                       >
                         <svg className={styles.iconDelete}>
                           <use href="/public/sprite.svg#icon-delete"></use>
@@ -61,4 +59,4 @@ const ProductTable = ({ products, handleEditProduct, handleDeleteProduct }) => {
   );
 };
 
-export default ProductTable;
+export default SuppliersTable;

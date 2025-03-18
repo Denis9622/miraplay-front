@@ -1,23 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../axiosInstance"; // Используем настроенный api
 
-axios.defaults.baseURL = "http://localhost:3000/api";
-
-const getAuthHeader = () => {
-  const token = localStorage.getItem("token");
-  return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-};
-
+// 📌 GET: Получить всех клиентов
 export const fetchCustomers = createAsyncThunk(
   "customers/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("Fetching customers..."); // ✅ Проверяем, что запрос отправляется
-      const response = await axios.get("/customers"); // ✅ Должно быть `/customers`, а не `/orders`
-      console.log("Customers fetched:", response.data); // ✅ Проверяем, что данные приходят
+      const response = await api.get("/customers"); // Используем api вместо axios
       return response.data;
     } catch (error) {
-      console.error("Fetch customers error:", error);
+      console.error(
+        "Fetch customers error:",
+        error.response?.data || error.message
+      );
       return rejectWithValue(
         error.response?.data || "Ошибка загрузки клиентов"
       );
@@ -25,20 +20,19 @@ export const fetchCustomers = createAsyncThunk(
   }
 );
 
-
 // 📌 POST: Добавить клиента
 export const addCustomer = createAsyncThunk(
   "customers/add",
   async (customerData, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "/customers",
-        customerData,
-        getAuthHeader()
-      );
-      dispatch(fetchCustomers()); // 🔄 Обновляем список после добавления
+      const response = await api.post("/customers", customerData); // Используем api
+      dispatch(fetchCustomers()); // Обновляем список после добавления
       return response.data;
     } catch (error) {
+      console.error(
+        "Add customer error:",
+        error.response?.data || error.message
+      );
       return rejectWithValue(
         error.response?.data || "Ошибка добавления клиента"
       );
@@ -51,14 +45,14 @@ export const updateCustomer = createAsyncThunk(
   "customers/update",
   async ({ id, customerData }, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axios.put(
-        `/customers/${id}`,
-        customerData,
-        getAuthHeader()
-      );
-      dispatch(fetchCustomers()); // 🔄 Обновляем список после обновления
+      const response = await api.put(`/customers/${id}`, customerData); // Используем api
+      dispatch(fetchCustomers()); // Обновляем список после обновления
       return response.data;
     } catch (error) {
+      console.error(
+        "Update customer error:",
+        error.response?.data || error.message
+      );
       return rejectWithValue(
         error.response?.data || "Ошибка обновления клиента"
       );
@@ -71,10 +65,14 @@ export const deleteCustomer = createAsyncThunk(
   "customers/delete",
   async (id, { dispatch, rejectWithValue }) => {
     try {
-      await axios.delete(`/customers/${id}`, getAuthHeader());
-      dispatch(fetchCustomers()); // 🔄 Обновляем список после удаления
+      await api.delete(`/customers/${id}`); // Используем api
+      dispatch(fetchCustomers()); // Обновляем список после удаления
       return id;
     } catch (error) {
+      console.error(
+        "Delete customer error:",
+        error.response?.data || error.message
+      );
       return rejectWithValue(error.response?.data || "Ошибка удаления клиента");
     }
   }

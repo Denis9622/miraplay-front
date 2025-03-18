@@ -31,7 +31,6 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Ошибка загрузки заказов";
       })
-
       // POST: Добавление заказа
       .addCase(addOrder.pending, (state) => {
         state.loading = true;
@@ -45,7 +44,6 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Ошибка добавления заказа";
       })
-
       // PUT: Обновление заказа
       .addCase(updateOrder.pending, (state) => {
         state.loading = true;
@@ -61,7 +59,6 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Ошибка обновления заказа";
       })
-
       // DELETE: Удаление заказа
       .addCase(deleteOrder.pending, (state) => {
         state.loading = true;

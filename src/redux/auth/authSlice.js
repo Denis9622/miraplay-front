@@ -94,7 +94,12 @@ const authSlice = createSlice({
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
       })
+      .addCase(refreshToken.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(refreshToken.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.token = action.payload.accessToken;
         localStorage.setItem("token", action.payload.accessToken);
       })

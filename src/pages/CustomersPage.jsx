@@ -5,139 +5,167 @@ import {
   addCustomer,
   updateCustomer,
   deleteCustomer,
-} from "../redux/customers/customersSlice";
+} from "../redux/customers/customersOperations";
+import CustomersTable from "../components/customers/CustomersTable";
 import styles from "./customersPage.module.css";
 
 const CustomersPage = () => {
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.customers);
-  const [filter, setFilter] = useState("");
-  const [newCustomer, setNewCustomer] = useState({
+  const {
+    items: customers,
+    loading,
+    error,
+  } = useSelector((state) => state.customers);
+  const [filterName, setFilterName] = useState("");
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const [customerForm, setCustomerForm] = useState({
     name: "",
     email: "",
     address: "",
     phone: "",
   });
-  const [editCustomer, setEditCustomer] = useState(null);
+  const [editCustomerId, setEditCustomerId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCustomers());
   }, [dispatch]);
 
-  // Фильтрация клиентов
-  const filteredCustomers = items.filter((customer) =>
-    customer.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  useEffect(() => {
+    setFilteredCustomers(
+      customers.filter((customer) =>
+        customer.name.toLowerCase().includes(filterName.toLowerCase())
+      )
+    );
+  }, [filterName, customers]);
+
+  const handleAddCustomer = () => {
+    dispatch(addCustomer(customerForm));
+    resetCustomerForm();
+    setIsModalOpen(false);
+  };
+
+  const handleUpdateCustomer = () => {
+    if (editCustomerId) {
+      dispatch(
+        updateCustomer({ id: editCustomerId, customerData: customerForm })
+      );
+      resetCustomerForm();
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleEditCustomer = (customer) => {
+    setCustomerForm({
+      name: customer.name,
+      email: customer.email,
+      address: customer.address,
+      phone: customer.phone,
+    });
+    setEditCustomerId(customer._id);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteCustomer = (id) => {
+    dispatch(deleteCustomer(id));
+  };
+
+  const resetCustomerForm = () => {
+    setCustomerForm({
+      name: "",
+      email: "",
+      address: "",
+      phone: "",
+    });
+    setEditCustomerId(null);
+  };
 
   return (
     <div className={styles.customersPage}>
-      <h1>Customers</h1>
+      {loading && <p>Loading customers...</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
-      {/* Фильтр */}
-      <input
-        type="text"
-        placeholder="Filter by name"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
-
-      {/* Форма добавления клиента */}
-      <div className={styles.form}>
+      <div className={styles.filterContainer}>
         <input
           type="text"
-          placeholder="Name"
-          value={newCustomer.name}
-          onChange={(e) =>
-            setNewCustomer({ ...newCustomer, name: e.target.value })
-          }
+          placeholder="Filter by name"
+          value={filterName}
+          onChange={(e) => setFilterName(e.target.value)}
+          className={styles.filterInput}
         />
-        <input
-          type="email"
-          placeholder="Email"
-          value={newCustomer.email}
-          onChange={(e) =>
-            setNewCustomer({ ...newCustomer, email: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={newCustomer.address}
-          onChange={(e) =>
-            setNewCustomer({ ...newCustomer, address: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Phone"
-          value={newCustomer.phone}
-          onChange={(e) =>
-            setNewCustomer({ ...newCustomer, phone: e.target.value })
-          }
-        />
-        <button onClick={() => dispatch(addCustomer(newCustomer))}>
-          Add Customer
+        <button className={styles.filterButton}>Filter</button>
+        <button
+          className={styles.openModalButton}
+          onClick={() => setIsModalOpen(true)}
+        >
+          {editCustomerId ? "Edit Customer" : "Add Customer"}
         </button>
       </div>
 
-      {/* Таблица клиентов */}
-      {loading && <p>Loading...</p>}
-      {error && <p className={styles.error}>{error}</p>}
-      <ul>
-        {filteredCustomers.map((customer) => (
-          <li key={customer._id}>
-            {customer.name} - {customer.email} - {customer.address} -{" "}
-            {customer.phone}
-            <button onClick={() => setEditCustomer(customer)}>Edit</button>
-            <button onClick={() => dispatch(deleteCustomer(customer._id))}>
-              Delete
+      {isModalOpen && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modal}>
+            <button
+              className={styles.modalClose}
+              onClick={() => {
+                resetCustomerForm();
+                setIsModalOpen(false);
+              }}
+            >
+              ✖
             </button>
-          </li>
-        ))}
-      </ul>
-
-      {/* Форма редактирования клиента */}
-      {editCustomer && (
-        <div className={styles.form}>
-          <input
-            type="text"
-            value={editCustomer.name}
-            onChange={(e) =>
-              setEditCustomer({ ...editCustomer, name: e.target.value })
-            }
-          />
-          <input
-            type="email"
-            value={editCustomer.email}
-            onChange={(e) =>
-              setEditCustomer({ ...editCustomer, email: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editCustomer.address}
-            onChange={(e) =>
-              setEditCustomer({ ...editCustomer, address: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            value={editCustomer.phone}
-            onChange={(e) =>
-              setEditCustomer({ ...editCustomer, phone: e.target.value })
-            }
-          />
-          <button
-            onClick={() =>
-              dispatch(
-                updateCustomer({ id: editCustomer._id, data: editCustomer })
-              )
-            }
-          >
-            Update
-          </button>
+            <h2>{editCustomerId ? "Edit Customer" : "Add Customer"}</h2>
+            <div className={styles.form}>
+              <input
+                type="text"
+                placeholder="Name"
+                value={customerForm.name}
+                onChange={(e) =>
+                  setCustomerForm({ ...customerForm, name: e.target.value })
+                }
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={customerForm.email}
+                onChange={(e) =>
+                  setCustomerForm({ ...customerForm, email: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Address"
+                value={customerForm.address}
+                onChange={(e) =>
+                  setCustomerForm({ ...customerForm, address: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Phone"
+                value={customerForm.phone}
+                onChange={(e) =>
+                  setCustomerForm({ ...customerForm, phone: e.target.value })
+                }
+              />
+              <button
+                onClick={
+                  editCustomerId ? handleUpdateCustomer : handleAddCustomer
+                }
+                className={styles.addButton}
+              >
+                {editCustomerId ? "Update Customer" : "Add Customer"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
+
+      <CustomersTable
+        customers={filteredCustomers}
+        handleEditCustomer={handleEditCustomer}
+        handleDeleteCustomer={handleDeleteCustomer}
+      />
     </div>
   );
 };

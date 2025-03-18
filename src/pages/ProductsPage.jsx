@@ -55,8 +55,10 @@ const ProductsPage = () => {
         <button
           onClick={() => setAddModalOpen(true)}
           className={styles.addButton}
-        >+
+        >
+          <img src="/public/Vector.svg" alt="Add" className={styles.iconAdd} />
         </button>
+        <p className={styles.textAdd}> Add a new product</p>
       </div>
 
       {loading && <p>Loading...</p>}

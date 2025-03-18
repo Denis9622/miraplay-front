@@ -1,15 +1,14 @@
 .productsPage {
-      margin-top: 155px;
+  margin-top: 155px;
   margin-left: 120px;
   margin-right: 40px;
-
 }
 .filterContainer {
   display: flex;
   align-items: center;
   justify-content: left;
+  margin-bottom: 20px;
 }
-
 
 .header {
   display: flex;
@@ -36,37 +35,42 @@
   cursor: pointer;
 }
 
-
 .addButton {
   display: flex;
-  
-  padding: 13px 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 13px;
   background-color: rgba(89, 177, 122, 1);
-  color: white;
+  color: #1d1e21;
   border: none;
   border-radius: 60px;
   cursor: pointer;
   margin-left: auto;
-  font-size: 32px;
-
-
-
+  /* font-size: 32px; */
+  width: 42px;
+  height: 42px;
+  margin-right: 8px;
 }
 
 .addButton:hover {
   background-color: #45a049;
 }
 
-
-
 .noProducts {
   text-align: center;
   padding: 15px;
   color: #777;
-} 
+}
 
-.iconAdd{
+.iconAdd {
   width: 16px;
   height: 16px;
   fill: white;
+  /* background-color: #651f1f; */
+}
+.textAdd {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0%;
 }

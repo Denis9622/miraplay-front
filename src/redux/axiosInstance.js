@@ -1,46 +1,47 @@
 import axios from "axios";
+import { store } from "./store"; // Импорт вашего Redux store
+import { refreshToken } from "./auth/authOperations"; // Импорт операции обновления токена
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
-  withCredentials: true, // Если сервер использует HTTPOnly куки
+  withCredentials: true, // Передача HTTPOnly куки
 });
 
-// 🔄 Добавляем перехватчик для обновления токена
+// 📌 Функция для установки заголовка Authorization
+const setAuthHeader = (token) => {
+  if (token) {
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common["Authorization"];
+  }
+};
+
+// 📌 Загружаем токен при старте
+const token = localStorage.getItem("token");
+if (token && token !== "undefined") {
+  setAuthHeader(token);
+}
+
+// 🔄 Перехватчик ошибок (обновление токена при 401)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Флаг, чтобы не зацикливаться
+    // Проверяем 401 ошибку и отсутствие повторного запроса
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
-
-        if (!refreshToken) {
-          console.log("❌ Нет refreshToken, разлогиниваем пользователя");
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          return Promise.reject(error);
-        }
-
-        // 🔄 Запрашиваем новый `accessToken` у сервера
-        const { data } = await axios.post("/auth/refresh", { refreshToken });
-
-        // 🔹 Обновляем токены в `localStorage`
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-
-        console.log("✅ Токен обновлен:", data.accessToken);
-
-        // 🔄 Повторяем оригинальный запрос с новым токеном
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        await store.dispatch(refreshToken());
+        const newToken = localStorage.getItem("token");
+        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return api(originalRequest);
-      } catch (refreshError) {
-        console.error("❌ Ошибка обновления токена:", refreshError);
-        localStorage.removeItem("accessToken");
+      } catch (err) {
+        console.error("❌ Ошибка обновления токена:", err);
+        localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
-        return Promise.reject(refreshError);
+        return Promise.reject(err);
       }
     }
 
@@ -49,3 +50,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+export { setAuthHeader };
