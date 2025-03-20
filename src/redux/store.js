@@ -8,13 +8,10 @@ import customersReducer from "./customers/customersSlice";
 import suppliersReducer from "./suppliers/suppliersSlice";
 import dashboardReducer from "./dashboard/dashboardSlice";
 
-
-
-
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["token"], // Храним только токен
+  whitelist: ["token", "refreshToken"], // Храним токен и refreshToken
 };
 
 export const store = configureStore({

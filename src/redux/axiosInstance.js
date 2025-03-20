@@ -1,34 +1,23 @@
 import axios from "axios";
-import { store } from "./store"; // Импорт вашего Redux store
-import { refreshToken } from "./auth/authOperations"; // Импорт операции обновления токена
+import { store } from "./store";
+import { refreshToken } from "./auth/authOperations";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
-  withCredentials: true, // Передача HTTPOnly куки
+  withCredentials: true,
 });
 
-// 📌 Функция для установки заголовка Authorization
-const setAuthHeader = (token) => {
-  if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common["Authorization"];
-  }
+// Установка заголовка Authorization
+export const setAuthHeader = (token) => {
+  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
-// 📌 Загружаем токен при старте
-const token = localStorage.getItem("token");
-if (token && token !== "undefined") {
-  setAuthHeader(token);
-}
-
-// 🔄 Перехватчик ошибок (обновление токена при 401)
+// Перехватчик ошибок
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Проверяем 401 ошибку и отсутствие повторного запроса
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -37,11 +26,9 @@ api.interceptors.response.use(
         const newToken = localStorage.getItem("token");
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return api(originalRequest);
-      } catch (err) {
-        console.error("❌ Ошибка обновления токена:", err);
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        return Promise.reject(err);
+      } catch (refreshError) {
+        console.error("Ошибка обновления токена:", refreshError.message);
+        return Promise.reject(refreshError);
       }
     }
 
@@ -50,4 +37,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-export { setAuthHeader };

@@ -38,8 +38,8 @@ const OrdersPage = () => {
     dispatch(fetchCustomers());
   }, [dispatch]);
 
-  // Filter orders when the filterName changes
-  useEffect(() => {
+  // Обработчик кнопки фильтрации
+  const handleFilterOrders = () => {
     setFilteredOrders(
       orders.filter((order) =>
         order.customer?.name
@@ -47,7 +47,7 @@ const OrdersPage = () => {
           : false
       )
     );
-  }, [filterName, orders]);
+  };
 
   const handleAddOrder = () => {
     dispatch(
@@ -94,7 +94,6 @@ const OrdersPage = () => {
     setEditOrderId(null);
   };
 
-
   return (
     <div className={styles.ordersPage}>
       {customersLoading && <p>Loading customers...</p>}
@@ -108,7 +107,12 @@ const OrdersPage = () => {
           onChange={(e) => setFilterName(e.target.value)}
           className={styles.filterInput}
         />
-        <button className={styles.filterButton}>Filter</button>
+        <button
+          className={styles.filterButton}
+          onClick={handleFilterOrders} // Фильтруем по нажатию
+        >
+          Filter
+        </button>
         <button
           className={styles.openModalButton}
           onClick={() => setIsModalOpen(true)}
@@ -165,12 +169,11 @@ const OrdersPage = () => {
                 type="datetime-local"
                 value={
                   orderForm.orderDate
-                    ? new Date(orderForm.orderDate).toISOString().slice(0, 16) // Если есть дата, используем её
-                    : new Date().toISOString().slice(0, 16) // Если нет даты, берём текущую
+                    ? new Date(orderForm.orderDate).toISOString().slice(0, 16)
+                    : new Date().toISOString().slice(0, 16)
                 }
-                onChange={
-                  (e) =>
-                    setOrderForm({ ...orderForm, orderDate: e.target.value }) // Обновляем состояние
+                onChange={(e) =>
+                  setOrderForm({ ...orderForm, orderDate: e.target.value })
                 }
               />
 

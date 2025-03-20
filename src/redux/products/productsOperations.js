@@ -1,78 +1,65 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../axiosInstance"; // Используем настроенный api
+import api from "../axiosInstance";
 
-// 📌 GET: Получить все товары
+// 📌 Получение списка продуктов
 export const fetchProducts = createAsyncThunk(
-  "products/fetchAll",
+  "products/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/products"); // Используем api
+      const response = await api.get("/products");
       return response.data;
     } catch (error) {
-      if (error.response?.status === 401) {
-        console.warn("Требуется refreshToken, пробуем обновить...");
-        return rejectWithValue("Refresh token required");
-      }
-      console.error(
-        "Ошибка загрузки товаров:",
-        error.response?.data || error.message
+      return rejectWithValue(
+        error.response?.data || "Ошибка загрузки продуктов"
       );
-      return rejectWithValue(error.response?.data || "Ошибка загрузки товаров");
     }
   }
 );
 
-// 📌 POST: Добавить товар
+// 📌 Добавление нового продукта
 export const addProduct = createAsyncThunk(
-  "products/add",
+  "products/addProduct",
   async (productData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/products", productData); // Используем api
+      const response = await api.post("/products", productData);
       return response.data;
     } catch (error) {
-      console.error(
-        "Ошибка добавления товара:",
-        error.response?.data || error.message
-      );
       return rejectWithValue(
-        error.response?.data || "Ошибка добавления товара"
+        error.response?.data || "Ошибка добавления продукта"
       );
     }
   }
 );
 
-// 📌 PUT: Обновить товар
+// 📌 Обновление продукта
 export const updateProduct = createAsyncThunk(
-  "products/update",
-  async ({ id, productData }, { rejectWithValue }) => {
+  "products/updateProduct",
+  async (productData, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/products/${id}`, productData); // Используем api
+      const response = await api.put(
+        `/products/${productData._id}`,
+        productData
+      );
       return response.data;
     } catch (error) {
-      console.error(
-        "Ошибка обновления товара:",
-        error.response?.data || error.message
-      );
       return rejectWithValue(
-        error.response?.data || "Ошибка обновления товара"
+        error.response?.data || "Ошибка обновления продукта"
       );
     }
   }
 );
 
-// 📌 DELETE: Удалить товар
+// 📌 Удаление продукта
 export const deleteProduct = createAsyncThunk(
-  "products/delete",
-  async (id, { rejectWithValue }) => {
+  "products/deleteProduct",
+  async (productId, { rejectWithValue }) => {
     try {
-      await api.delete(`/products/${id}`); // Используем api
-      return id; // Возвращаем ID удалённого товара
+      const response = await api.delete(`/products/${productId}`);
+      return response.data;
     } catch (error) {
-      console.error(
-        "Ошибка удаления товара:",
-        error.response?.data || error.message
+      return rejectWithValue(
+        error.response?.data || "Ошибка удаления продукта"
       );
-      return rejectWithValue(error.response?.data || "Ошибка удаления товара");
     }
   }
 );

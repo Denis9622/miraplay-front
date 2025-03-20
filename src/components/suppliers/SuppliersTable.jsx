@@ -1,6 +1,10 @@
 import styles from "./suppliersTable.module.css";
 
-const SuppliersTable = ({ suppliers, handleEditSupplier, handleDeleteSupplier }) => {
+const SuppliersTable = ({
+  suppliers,
+  handleEditSupplier,
+  handleDeleteSupplier,
+}) => {
   return (
     <div className={styles.suppliersTable}>
       <h3>All Suppliers</h3>
@@ -9,16 +13,18 @@ const SuppliersTable = ({ suppliers, handleEditSupplier, handleDeleteSupplier })
           <thead>
             <tr>
               <th>Name</th>
-              <th>Email</th>
+              <th>Company</th>
               <th>Address</th>
-              <th>Phone</th>
+              <th>Amount</th>
+              <th>Delivery Date</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {suppliers.length === 0 ? (
               <tr>
-                <td colSpan="5" className={styles.noSuppliers}>
+                <td colSpan="7" className={styles.noSuppliers}>
                   No suppliers found
                 </td>
               </tr>
@@ -26,14 +32,18 @@ const SuppliersTable = ({ suppliers, handleEditSupplier, handleDeleteSupplier })
               suppliers.map((supplier) => (
                 <tr key={supplier._id}>
                   <td>{supplier.name}</td>
-                  <td>{supplier.email}</td>
+                  <td>{supplier.company}</td>
                   <td>{supplier.address}</td>
-                  <td>{supplier.phone}</td>
+                  <td>{supplier.amount}</td>
+                  <td>
+                    {new Date(supplier.deliveryDate).toLocaleDateString()}
+                  </td>
+                  <td>{supplier.status}</td>
                   <td>
                     <div className={styles.buttonBox}>
                       <button
                         className={styles.editButton}
-                        onClick={() => handleEditSupplier(supplier)} // Edit supplier
+                        onClick={() => handleEditSupplier(supplier)}
                       >
                         <svg className={styles.iconEdit}>
                           <use href="/public/sprite.svg#icon-edit"></use>
@@ -41,7 +51,7 @@ const SuppliersTable = ({ suppliers, handleEditSupplier, handleDeleteSupplier })
                       </button>
                       <button
                         className={styles.deleteButton}
-                        onClick={() => handleDeleteSupplier(supplier._id)} // Delete supplier
+                        onClick={() => handleDeleteSupplier(supplier._id)}
                       >
                         <svg className={styles.iconDelete}>
                           <use href="/public/sprite.svg#icon-delete"></use>

@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../axiosInstance"; // Используем настроенный api
+import api from "../axiosInstance"; // Используем настроенный API
 
-// 📌 **Получить всех поставщиков (GET)**
+// 📌 Операции для работы с поставщиками
+
+// Получение всех поставщиков
 export const fetchSuppliers = createAsyncThunk(
   "suppliers/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/suppliers"); // Используем api
+      const response = await api.get("/suppliers");
       return response.data;
     } catch (error) {
       console.error(
@@ -20,13 +22,13 @@ export const fetchSuppliers = createAsyncThunk(
   }
 );
 
-// 📌 **Добавить поставщика (POST)**
+// Добавление нового поставщика
 export const addSupplier = createAsyncThunk(
   "suppliers/add",
   async (supplierData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/suppliers", supplierData); // Используем api
-      return response.data;
+      const response = await api.post("/suppliers", supplierData);
+      return response.data; // Возвращаем данные добавленного поставщика
     } catch (error) {
       console.error(
         "Ошибка добавления поставщика:",
@@ -39,13 +41,13 @@ export const addSupplier = createAsyncThunk(
   }
 );
 
-// 📌 **Обновить поставщика (PUT)**
+// Обновление данных поставщика
 export const updateSupplier = createAsyncThunk(
   "suppliers/update",
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, supplierData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/suppliers/${id}`, data); // Используем api
-      return response.data;
+      const response = await api.put(`/suppliers/${id}`, supplierData);
+      return response.data; // Возвращаем обновлённые данные поставщика
     } catch (error) {
       console.error(
         "Ошибка обновления поставщика:",
@@ -58,12 +60,12 @@ export const updateSupplier = createAsyncThunk(
   }
 );
 
-// 📌 **Удалить поставщика (DELETE)**
+// Удаление поставщика
 export const deleteSupplier = createAsyncThunk(
   "suppliers/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/suppliers/${id}`); // Используем api
+      await api.delete(`/suppliers/${id}`);
       return id; // Возвращаем ID удалённого поставщика
     } catch (error) {
       console.error(
@@ -77,13 +79,17 @@ export const deleteSupplier = createAsyncThunk(
   }
 );
 
-// 📌 **Создаем Slice**
+// 📌 Slice для поставщиков
+
+const initialState = { items: [], loading: false, error: null };
+
 const suppliersSlice = createSlice({
   name: "suppliers",
-  initialState: { items: [], loading: false, error: null },
-  reducers: {},
+  initialState,
+  reducers: {}, // Если нужны локальные действия, добавляйте их сюда
   extraReducers: (builder) => {
     builder
+      // Обработка получения поставщиков
       .addCase(fetchSuppliers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -96,6 +102,8 @@ const suppliersSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      // Обработка добавления поставщика
       .addCase(addSupplier.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -108,33 +116,19 @@ const suppliersSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(updateSupplier.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+
+      // Обработка обновления поставщика
       .addCase(updateSupplier.fulfilled, (state, action) => {
-        state.loading = false;
         state.items = state.items.map((supplier) =>
           supplier._id === action.payload._id ? action.payload : supplier
         );
       })
-      .addCase(updateSupplier.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(deleteSupplier.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+
+      // Обработка удаления поставщика
       .addCase(deleteSupplier.fulfilled, (state, action) => {
-        state.loading = false;
         state.items = state.items.filter(
           (supplier) => supplier._id !== action.payload
         );
-      })
-      .addCase(deleteSupplier.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });

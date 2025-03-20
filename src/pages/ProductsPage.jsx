@@ -5,8 +5,7 @@ import {
   deleteProduct,
 } from "../redux/products/productsOperations.js";
 import { refreshToken } from "../redux/auth/authOperations.js";
-import AddProductModal from "../components/products/AddProductModal.jsx";
-import EditProductModal from "../components/products/EditProductModal.jsx";
+import ProductModal from "../components/products/ProductModal.jsx";
 import ProductTable from "../components/products/ProductTable.jsx";
 import styles from "./productsPage.module.css";
 
@@ -15,8 +14,7 @@ const ProductsPage = () => {
   const { items, loading, error } = useSelector((state) => state.products);
   const [searchQuery, setSearchQuery] = useState(""); // Поле ввода для фильтрации
   const [filteredProducts, setFilteredProducts] = useState([]); // Для фильтрованных данных
-  const [isAddModalOpen, setAddModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
 
   // Загрузка данных продуктов
@@ -39,6 +37,23 @@ const ProductsPage = () => {
     setFilteredProducts(filtered);
   };
 
+  // Обработчик редактирования продукта
+  const handleEditProduct = (product) => {
+    setCurrentProduct(product);
+    setModalOpen(true);
+  };
+
+  // Обработчик удаления продукта
+  const handleDeleteProduct = (_id) => {
+    dispatch(deleteProduct(_id));
+  };
+
+  // Обработчик добавления продукта
+  const handleAddProduct = () => {
+    setCurrentProduct(null);
+    setModalOpen(true);
+  };
+
   return (
     <div className={styles.productsPage}>
       <div className={styles.filterContainer}>
@@ -52,32 +67,23 @@ const ProductsPage = () => {
         <button onClick={handleFilter} className={styles.filterButton}>
           Filter
         </button>
-        <button
-          onClick={() => setAddModalOpen(true)}
-          className={styles.addButton}
-        >
+        <button onClick={handleAddProduct} className={styles.addButton}>
           <img src="/public/Vector.svg" alt="Add" className={styles.iconAdd} />
         </button>
         <p className={styles.textAdd}> Add a new product</p>
       </div>
 
       {loading && <p>Loading...</p>}
-      {error && <p className={styles.error}>{error}</p>}
+      {error && <p className={styles.error}>{error.message || error}</p>}
       <ProductTable
         products={filteredProducts}
-        onDelete={(_id) => dispatch(deleteProduct(_id))}
-        onEdit={(product) => {
-          setCurrentProduct(product);
-          setEditModalOpen(true);
-        }}
+        handleDeleteProduct={handleDeleteProduct}
+        handleEditProduct={handleEditProduct}
       />
-      {isAddModalOpen && (
-        <AddProductModal onClose={() => setAddModalOpen(false)} />
-      )}
-      {isEditModalOpen && currentProduct && (
-        <EditProductModal
+      {isModalOpen && (
+        <ProductModal
           product={currentProduct}
-          onClose={() => setEditModalOpen(false)}
+          onClose={() => setModalOpen(false)}
         />
       )}
     </div>

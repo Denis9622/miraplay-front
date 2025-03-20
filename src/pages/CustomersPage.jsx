@@ -32,12 +32,15 @@ const CustomersPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setFilteredCustomers(
-      customers.filter((customer) =>
-        customer.name.toLowerCase().includes(filterName.toLowerCase())
-      )
+    setFilteredCustomers(customers);
+  }, [customers]);
+
+  const handleFilter = () => {
+    const filtered = customers.filter((customer) =>
+      customer.name.toLowerCase().includes(filterName.toLowerCase())
     );
-  }, [filterName, customers]);
+    setFilteredCustomers(filtered);
+  };
 
   const handleAddCustomer = () => {
     dispatch(addCustomer(customerForm));
@@ -93,7 +96,9 @@ const CustomersPage = () => {
           onChange={(e) => setFilterName(e.target.value)}
           className={styles.filterInput}
         />
-        <button className={styles.filterButton}>Filter</button>
+        <button className={styles.filterButton} onClick={handleFilter}>
+          Filter
+        </button>
         <button
           className={styles.openModalButton}
           onClick={() => setIsModalOpen(true)}

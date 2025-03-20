@@ -16,13 +16,16 @@ const SuppliersPage = () => {
     loading,
     error,
   } = useSelector((state) => state.suppliers);
+
   const [filterName, setFilterName] = useState("");
   const [filteredSuppliers, setFilteredSuppliers] = useState([]);
   const [supplierForm, setSupplierForm] = useState({
     name: "",
-    email: "",
+    company: "",
     address: "",
-    phone: "",
+    amount: 0,
+    deliveryDate: "",
+    status: "Pending",
   });
   const [editSupplierId, setEditSupplierId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,35 +35,48 @@ const SuppliersPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setFilteredSuppliers(
-      suppliers.filter((supplier) =>
-        supplier.name.toLowerCase().includes(filterName.toLowerCase())
-      )
+    setFilteredSuppliers(suppliers);
+  }, [suppliers]);
+
+  const handleFilter = () => {
+    const filtered = suppliers.filter((supplier) =>
+      supplier.name.toLowerCase().includes(filterName.toLowerCase())
     );
-  }, [filterName, suppliers]);
+    setFilteredSuppliers(filtered);
+  };
 
   const handleAddSupplier = () => {
-    dispatch(addSupplier(supplierForm));
-    resetSupplierForm();
-    setIsModalOpen(false);
+    if (supplierForm.amount > 0) {
+      dispatch(addSupplier(supplierForm));
+      resetSupplierForm();
+      setIsModalOpen(false);
+    } else {
+      alert("Amount must be positive");
+    }
   };
 
   const handleUpdateSupplier = () => {
     if (editSupplierId) {
-      dispatch(
-        updateSupplier({ id: editSupplierId, supplierData: supplierForm })
-      );
-      resetSupplierForm();
-      setIsModalOpen(false);
+      if (supplierForm.amount > 0) {
+        dispatch(
+          updateSupplier({ id: editSupplierId, supplierData: supplierForm })
+        );
+        resetSupplierForm();
+        setIsModalOpen(false);
+      } else {
+        alert("Amount must be positive");
+      }
     }
   };
 
   const handleEditSupplier = (supplier) => {
     setSupplierForm({
       name: supplier.name,
-      email: supplier.email,
+      company: supplier.company,
       address: supplier.address,
-      phone: supplier.phone,
+      amount: supplier.amount,
+      deliveryDate: supplier.deliveryDate,
+      status: supplier.status,
     });
     setEditSupplierId(supplier._id);
     setIsModalOpen(true);
@@ -73,9 +89,11 @@ const SuppliersPage = () => {
   const resetSupplierForm = () => {
     setSupplierForm({
       name: "",
-      email: "",
+      company: "",
       address: "",
-      phone: "",
+      amount: 0,
+      deliveryDate: "",
+      status: "Pending",
     });
     setEditSupplierId(null);
   };
@@ -83,7 +101,7 @@ const SuppliersPage = () => {
   return (
     <div className={styles.suppliersPage}>
       {loading && <p>Loading suppliers...</p>}
-      {error && <p className={styles.error}>{error}</p>}
+      {error && <p className={styles.error}>{error.message || error}</p>}
 
       <div className={styles.filterContainer}>
         <input
@@ -93,7 +111,9 @@ const SuppliersPage = () => {
           onChange={(e) => setFilterName(e.target.value)}
           className={styles.filterInput}
         />
-        <button className={styles.filterButton}>Filter</button>
+        <button className={styles.filterButton} onClick={handleFilter}>
+          Filter
+        </button>
         <button
           className={styles.openModalButton}
           onClick={() => setIsModalOpen(true)}
@@ -125,11 +145,11 @@ const SuppliersPage = () => {
                 }
               />
               <input
-                type="email"
-                placeholder="Email"
-                value={supplierForm.email}
+                type="text"
+                placeholder="Company"
+                value={supplierForm.company}
                 onChange={(e) =>
-                  setSupplierForm({ ...supplierForm, email: e.target.value })
+                  setSupplierForm({ ...supplierForm, company: e.target.value })
                 }
               />
               <input
@@ -141,13 +161,44 @@ const SuppliersPage = () => {
                 }
               />
               <input
-                type="text"
-                placeholder="Phone"
-                value={supplierForm.phone}
+                type="number"
+                placeholder="Amount"
+                value={supplierForm.amount}
                 onChange={(e) =>
-                  setSupplierForm({ ...supplierForm, phone: e.target.value })
+                  setSupplierForm({
+                    ...supplierForm,
+                    amount: Number(e.target.value),
+                  })
                 }
               />
+              <input
+                type="datetime-local"
+                value={
+                  supplierForm.deliveryDate
+                    ? new Date(supplierForm.deliveryDate)
+                        .toISOString()
+                        .slice(0, 16)
+                    : new Date().toISOString().slice(0, 16)
+                }
+                onChange={(e) =>
+                  setSupplierForm({
+                    ...supplierForm,
+                    deliveryDate: e.target.value,
+                  })
+                }
+              />
+              <select
+                value={supplierForm.status}
+                onChange={(e) =>
+                  setSupplierForm({ ...supplierForm, status: e.target.value })
+                }
+              >
+                <option value="Pending">Pending</option>
+                <option value="Processing">Processing</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
               <button
                 onClick={
                   editSupplierId ? handleUpdateSupplier : handleAddSupplier

@@ -1,40 +1,50 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../axiosInstance"; // Используем настроенный api
+import { setAuthHeader } from "../axiosInstance";
 
 // 📌 Регистрация пользователя
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/register", userData);
-      const { user, accessToken, refreshToken } = response.data.data;
+      const response = await api.post("/auth/register", userData);
+      const { id, name, email, accessToken } = response.data.data;
 
-      localStorage.setItem("user", JSON.stringify(user));
+      // Сохраняем токены и данные пользователя
+      localStorage.setItem("user", JSON.stringify({ id, name, email }));
       localStorage.setItem("token", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
 
-      return { user, accessToken, refreshToken };
+      setAuthHeader(accessToken); // Устанавливаем токен в заголовки
+
+      return { id, name, email, accessToken };
     } catch (error) {
+      console.error(
+        "Ошибка регистрации:",
+        error.response?.data || error.message
+      );
       return rejectWithValue(error.response?.data || "Ошибка регистрации");
     }
   }
 );
 
+// 📌 Вход пользователя
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post("/login", credentials);
+      const response = await api.post("/auth/login", credentials);
       const { user, accessToken, refreshToken } = response.data.data;
 
+      // Сохраняем токены и данные пользователя
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      setAuthHeader(accessToken); // 📌 Добавляем токен в заголовки
+      setAuthHeader(accessToken); // Устанавливаем токен в заголовки
 
       return { user, accessToken, refreshToken };
     } catch (error) {
+      console.error("Ошибка входа:", error.response?.data || error.message);
       return rejectWithValue(error.response?.data || "Ошибка входа");
     }
   }
@@ -47,14 +57,16 @@ export const logoutUser = createAsyncThunk(
     try {
       const refreshToken = localStorage.getItem("refreshToken");
 
+      // Отправляем запрос на сервер для удаления токена
       const response = await api.post(
-        "/logout",
+        "/auth/logout",
         {},
         refreshToken
           ? { headers: { Authorization: `Bearer ${refreshToken}` } }
           : {}
       );
 
+      // Очищаем локальные данные
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
@@ -62,6 +74,14 @@ export const logoutUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
+      if (error.response?.data?.message === "Invalid refresh token") {
+        // Очищаем локальные данные при недействительном refresh token
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        sessionStorage.clear();
+      }
+      console.error("Ошибка выхода:", error.response?.data || error.message);
       return rejectWithValue(error.response?.data || "Ошибка выхода");
     }
   }
@@ -72,22 +92,23 @@ export const refreshToken = createAsyncThunk(
   "auth/refreshToken",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.post("/refresh"); // Исправляем URL
-      const newToken = response.data.accessToken;
+      const refreshToken = localStorage.getItem("refreshToken");
+      const response = await api.post(
+        "/auth/refresh",
+        {},
+        refreshToken
+          ? { headers: { Authorization: `Bearer ${refreshToken}` } }
+          : {}
+      );
+      const newAccessToken = response.data.accessToken;
 
-      localStorage.setItem("token", newToken);
-      setAuthHeader(newToken); // Устанавливаем новый токен в заголовки
+      localStorage.setItem("token", newAccessToken);
+      setAuthHeader(newAccessToken); // Устанавливаем новый accessToken
 
-      return response.data;
+      return newAccessToken;
     } catch (error) {
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      return rejectWithValue("Сессия истекла, авторизуйтесь снова");
+      return rejectWithValue("Не удалось обновить токен. Авторизуйтесь снова.");
     }
   }
 );
-
-// Установка заголовка авторизации
-export const setAuthHeader = (token) => {
-  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-};

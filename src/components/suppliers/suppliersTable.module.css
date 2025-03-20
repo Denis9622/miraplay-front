@@ -1,7 +1,3 @@
-/* -------------------------
-   Global Table Styles
-------------------------- */
-
 .recentSuppliers {
   padding: 0 20px;
   background: white;
@@ -13,18 +9,18 @@
 
 .recentSuppliers table {
   width: 100%;
-  border-collapse: collapse; /* Убираем внутренние промежутки между ячейками */
+  border-collapse: collapse;
 }
 
 .recentSuppliers th,
 .recentSuppliers td {
-  border: 1px solid rgba(29, 30, 33, 0.1); /* Внутренние границы */
-  text-align: left; /* Выравнивание текста */
+  border: 1px solid rgba(29, 30, 33, 0.1);
+  text-align: left;
   padding: 20px;
 }
 
 .recentSuppliers th {
-  background-color: #e7f1ed; /* Фон для заголовков */
+  background-color: #e7f1ed;
   color: #1d1e2166;
   font-size: 14px;
   font-weight: 500;
@@ -40,39 +36,31 @@
 
 .recentSuppliers th:first-child,
 .recentSuppliers td:first-child {
-  padding-left: 0; /* Убираем отступ слева у первого столбца */
+  padding-left: 0;
 }
 
 .recentSuppliers th:last-child,
 .recentSuppliers td:last-child {
-  padding-right: 0; /* Убираем отступ справа у последнего столбца */
+  padding-right: 0;
 }
 
-/* -------------------------
-   Removing Specific Borders
-------------------------- */
-
 .recentSuppliers table tr:first-child th {
-  border-top: none; /* Убираем верхнюю границу у первой строки */
+  border-top: none;
 }
 
 .recentSuppliers table tr:last-child td {
-  border-bottom: none; /* Убираем нижнюю границу у последней строки */
+  border-bottom: none;
 }
 
 .recentSuppliers table tr td:first-child,
 .recentSuppliers table tr th:first-child {
-  border-left: none; /* Убираем левую границу у первого столбца */
+  border-left: none;
 }
 
 .recentSuppliers table tr td:last-child,
 .recentSuppliers table tr th:last-child {
-  border-right: none; /* Убираем правую границу у последнего столбца */
+  border-right: none;
 }
-
-/* -------------------------
-   Header (H3) Styles
-------------------------- */
 
 .suppliersTable h3 {
   background-color: #e7f1ed;
@@ -87,13 +75,9 @@
   border-bottom-left-radius: 0;
 }
 
-/* -------------------------
-   Button Group (Actions)
-------------------------- */
-
 .buttonBox {
   display: flex; 
-  gap: 8px; 
+  gap: 8px;
 }
 
 .editButton,
@@ -103,7 +87,7 @@
   align-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 50%; 
+  border-radius: 50%;
   background: transparent;
 }
 
@@ -115,10 +99,6 @@
   border: 1px solid rgba(232, 80, 80, 0.5); 
 }
 
-/* -------------------------
-   Icon Styles
-------------------------- */
-
 .iconEdit,
 .iconDelete {
   width: 16px; 
@@ -126,9 +106,10 @@
   fill: currentColor; 
 }
 
-.recentSuppliers th{
+.recentSuppliers th {
   background: none;
 }
-.recentSuppliers table{
+
+.recentSuppliers table {
   box-shadow: none;
 }
