@@ -215,3 +215,29 @@
 .modal {
   animation: fadeIn 0.3s ease-out;
 }
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* Центрирование */
+  margin-top: 20px;
+  margin-bottom: 40px;
+  gap: 8px;
+}
+.activePageButton {
+  border: none;
+  padding: 3.56px;
+  width: 11.88px;
+  height: 11.88px;
+  border-radius: 50%;
+  background-color: rgba(89, 177, 122, 1);
+}
+.pageButton {
+  border: none;
+  padding: 3.56px;
+  width: 11.88px;
+  height: 11.88px;
+  border-radius: 50%;
+  background-color: rgba(231, 241, 237, 1);
+}

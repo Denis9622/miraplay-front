@@ -19,8 +19,10 @@ const OrdersPage = () => {
     error: customersError,
   } = useSelector((state) => state.customers);
 
-  const [filterName, setFilterName] = useState("");
-  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // Временное хранилище ввода
+  const [filteredOrders, setFilteredOrders] = useState([]); // Фильтрованные заказы
+  const [isFiltered, setIsFiltered] = useState(false); // Флаг состояния фильтра
+
   const [orderForm, setOrderForm] = useState({
     customerId: "",
     address: "",
@@ -29,24 +31,34 @@ const OrdersPage = () => {
     price: 0,
     status: "Pending",
   });
+
   const [editOrderId, setEditOrderId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  // Fetch orders and customers on component mount
+  // Загрузка заказов и клиентов при монтировании
   useEffect(() => {
     dispatch(fetchOrders());
     dispatch(fetchCustomers());
   }, [dispatch]);
 
-  // Обработчик кнопки фильтрации
-  const handleFilterOrders = () => {
-    setFilteredOrders(
-      orders.filter((order) =>
-        order.customer?.name
-          ? order.customer.name.toLowerCase().includes(filterName.toLowerCase())
-          : false
-      )
-    );
+  // Фильтрация при нажатии кнопки
+  const handleFilterClick = () => {
+    if (!searchQuery.trim()) {
+      setIsFiltered(false);
+      setFilteredOrders([]);
+      return;
+    }
+    const filtered = orders.filter((order) => {
+      const customer = customers.find((c) => c._id === order.customerId);
+      return (
+        customer &&
+        customer.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+    setFilteredOrders(filtered);
+    setIsFiltered(true);
   };
 
   const handleAddOrder = () => {
@@ -94,23 +106,29 @@ const OrdersPage = () => {
     setEditOrderId(null);
   };
 
+  const indexOfLastOrder = currentPage * itemsPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - itemsPerPage;
+  const currentOrders = isFiltered
+    ? filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder)
+    : orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className={styles.ordersPage}>
       {customersLoading && <p>Loading customers...</p>}
       {customersError && <p className={styles.error}>{customersError}</p>}
 
+      {/* Фильтрация заказов */}
       <div className={styles.filterContainer}>
         <input
           type="text"
           placeholder="User Name"
-          value={filterName}
-          onChange={(e) => setFilterName(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className={styles.filterInput}
         />
-        <button
-          className={styles.filterButton}
-          onClick={handleFilterOrders} // Фильтруем по нажатию
-        >
+        <button className={styles.filterButton} onClick={handleFilterClick}>
           Filter
         </button>
         <button
@@ -121,6 +139,7 @@ const OrdersPage = () => {
         </button>
       </div>
 
+      {/* Модальное окно для добавления / редактирования заказа */}
       {isModalOpen && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modal}>
@@ -148,6 +167,7 @@ const OrdersPage = () => {
                   </option>
                 ))}
               </select>
+
               <input
                 type="text"
                 placeholder="Address"
@@ -156,6 +176,7 @@ const OrdersPage = () => {
                   setOrderForm({ ...orderForm, address: e.target.value })
                 }
               />
+
               <input
                 type="text"
                 placeholder="Products (comma separated)"
@@ -185,6 +206,7 @@ const OrdersPage = () => {
                   setOrderForm({ ...orderForm, price: Number(e.target.value) })
                 }
               />
+
               <select
                 value={orderForm.status}
                 onChange={(e) =>
@@ -192,11 +214,12 @@ const OrdersPage = () => {
                 }
               >
                 <option value="Pending">Pending</option>
-                <option value="Shipped">Processing</option>
+                <option value="Processing">Processing</option>
                 <option value="Delivered">Delivered</option>
-                <option value="Delivered">Confirmed</option>
-                <option value="Delivered">Cancelled</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
+
               <button
                 onClick={editOrderId ? handleUpdateOrder : handleAddOrder}
                 className={styles.addButton}
@@ -208,11 +231,34 @@ const OrdersPage = () => {
         </div>
       )}
 
+      {/* Таблица заказов (все заказы или отфильтрованные) */}
       <OrdersTable
-        orders={filteredOrders}
+        orders={currentOrders}
         handleEditOrder={handleEditOrder}
         handleDeleteOrder={handleDeleteOrder}
       />
+      <div className={styles.pagination}>
+        {Array.from(
+          {
+            length: Math.ceil(
+              (isFiltered ? filteredOrders.length : orders.length) /
+                itemsPerPage
+            ),
+          },
+          (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={
+                currentPage === index + 1
+                  ? styles.activePageButton
+                  : styles.pageButton
+              }
+            >
+            </button>
+          )
+        )}
+      </div>
     </div>
   );
 };

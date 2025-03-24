@@ -19,82 +19,145 @@
 ------------------------- */
 .modal {
   background-color: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 400px;
-  max-width: 90%; /* Адаптация на маленьких экранах */
+  border-radius: 12px;
+  padding: 40px 40px 60px 40px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+  /* width: 400px; */
+  /* max-width: 90%;  */
   text-align: center;
 }
 
 /* -------------------------
    Form Styles
 ------------------------- */
-form input {
-  width: calc(100% - 20px);
-  margin: 10px 0;
-  padding: 8px 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+.form {
+  display: flex;
+  /* flex-wrap: wrap; */
+  /* justify-content: space-between; */
 }
 
-form input:focus {
-  border-color: #007bff; /* Цвет фокуса */
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #1d1e2166;
+
+  /* width: 48%; */
+}
+.leftColumn {
+  margin-right: 8px;
+}
+form input,
+form select {
+  width: 224px;
+  color: #1d1e2166;
+
+  /* margin: 14px 0;  */
+  padding: 13px 18px;
+  font-size: 16px;
+  border: 1px solid #1d1e211a;
+  border-radius: 60px;
+}
+form input::placeholder {
+  color: rgba(29, 30, 33, 0.4);
+}
+
+form input:focus,
+form select:focus {
+  border: 1px solid rgba(89, 177, 122, 1);
   outline: none;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  /* box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); */
 }
 
-form button {
-  margin: 10px 5px 0;
-  padding: 10px 15px;
-  font-size: 16px;
+.buttonContainer {
+  /* display: flex; */
+  /* justify-content: space-between; */
+  /* width: 100%; */
+  margin-top: 40px;
+  text-align: left;
+}
+
+.buttonContainer button {
+  width: 133px;
+  padding: 13px 0px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0%;
   border: none;
-  border-radius: 4px;
+  border-radius: 60px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  /* width: 48%; */
 }
 
 /* Кнопки Submit и Cancel */
-form button[type="submit"] {
-  background-color: #28a745; /* Зеленый */
+.buttonContainer button[type="submit"] {
+  background-color: rgba(89, 177, 122, 1); /* Зеленый */
   color: white;
+  margin-right: 8px;
 }
 
-form button[type="submit"]:hover {
+.buttonContainer button[type="submit"]:hover {
   background-color: #218838; /* Темнее при наведении */
 }
 
-form button[type="button"] {
-  background-color: #dc3545; /* Красный */
+.buttonContainer button[type="button"] {
+  background-color: rgba(29, 30, 33, 0.1);
   color: white;
 }
 
-form button[type="button"]:hover {
+.buttonContainer button[type="button"]:hover {
   background-color: #c82333; /* Темнее при наведении */
 }
 
 /* Заголовок модального окна */
 h2 {
+  text-align: left;
   font-size: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 40px;
   color: #333;
 }
-
-form select {
-  width: calc(100% - 20px);
-  margin: 10px 0;
-  padding: 8px 10px;
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('/chevron-down.svg') no-repeat right 10px center;
+  background-size: 16px 16px;
+  padding-right: 36px;
+  color: #1D1E2166;
+  background-color: #fff;
+  border: 1px solid #1d1e211a;
+  border-radius: 60px;
+  padding: 13px 18px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+  cursor: pointer;
 }
 
-form select:focus {
-  border-color: #007bff; /* Акцент при фокусе */
+/* Стили для открытого выпадающего меню */
+select:focus {
+  border: 1px solid rgba(89, 177, 122, 1);
   outline: none;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
+/* Улучшение выпадающего списка */
+select option {
+  background: #fff;
+  color: #1D1E21;
+  font-size: 16px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* Стили для hover и focus в option */
+select option:hover,
+select option:focus {
+  background: rgba(89, 177, 122, 0.2);
+  color: #218838;
+}
+
+/* Убираем стандартную стрелку в IE */
+select::-ms-expand {
+  display: none;
+}

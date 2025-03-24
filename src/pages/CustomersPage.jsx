@@ -26,6 +26,8 @@ const CustomersPage = () => {
   });
   const [editCustomerId, setEditCustomerId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     dispatch(fetchCustomers());
@@ -82,6 +84,15 @@ const CustomersPage = () => {
     });
     setEditCustomerId(null);
   };
+
+  const indexOfLastCustomer = currentPage * itemsPerPage;
+  const indexOfFirstCustomer = indexOfLastCustomer - itemsPerPage;
+  const currentCustomers = filteredCustomers.slice(
+    indexOfFirstCustomer,
+    indexOfLastCustomer
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className={styles.customersPage}>
@@ -167,10 +178,27 @@ const CustomersPage = () => {
       )}
 
       <CustomersTable
-        customers={filteredCustomers}
+        customers={currentCustomers}
         handleEditCustomer={handleEditCustomer}
         handleDeleteCustomer={handleDeleteCustomer}
       />
+      <div className={styles.pagination}>
+        {Array.from(
+          { length: Math.ceil(filteredCustomers.length / itemsPerPage) },
+          (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={
+                currentPage === index + 1
+                  ? styles.activePageButton
+                  : styles.pageButton
+              }
+            >
+            </button>
+          )
+        )}
+      </div>
     </div>
   );
 };

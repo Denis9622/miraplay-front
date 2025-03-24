@@ -16,6 +16,8 @@ const ProductsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]); // Для фильтрованных данных
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Загрузка данных продуктов
   useEffect(() => {
@@ -54,6 +56,17 @@ const ProductsPage = () => {
     setModalOpen(true);
   };
 
+  // Получение текущих продуктов
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  // Изменение страницы
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className={styles.productsPage}>
       <div className={styles.filterContainer}>
@@ -76,7 +89,7 @@ const ProductsPage = () => {
       {loading && <p>Loading...</p>}
       {error && <p className={styles.error}>{error.message || error}</p>}
       <ProductTable
-        products={filteredProducts}
+        products={currentProducts}
         handleDeleteProduct={handleDeleteProduct}
         handleEditProduct={handleEditProduct}
       />
@@ -86,6 +99,23 @@ const ProductsPage = () => {
           onClose={() => setModalOpen(false)}
         />
       )}
+      <div className={styles.pagination}>
+        {Array.from(
+          { length: Math.ceil(filteredProducts.length / itemsPerPage) },
+          (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={
+                currentPage === index + 1
+                  ? styles.activePageButton
+                  : styles.pageButton
+              }
+            >
+            </button>
+          )
+        )}
+      </div>
     </div>
   );
 };

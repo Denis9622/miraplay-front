@@ -4,22 +4,33 @@ import {
   addProduct,
   updateProduct,
 } from "../../redux/products/productsOperations.js";
+import CustomSelect from "./CustomSelect.jsx";
 import styles from "./productModal.module.css";
 
 const ProductModal = ({ product, onClose }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: product ? product.name : "",
-    category: product ? product.category : "Medicine", // Устанавливаем значение по умолчанию
-    stock: product ? product.stock : 0,
+    category: product ? product.category : "", // Устанавливаем значение по умолчанию как пустую строку
+    stock: product ? product.stock : "",
     suppliers: product ? product.suppliers.join(", ") : "",
-    price: product ? product.price : 0,
+    price: product ? product.price : "",
   });
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     // Загрузка категорий (пример)
-    setCategories(["Medicine", "Heart", "Head", "Hand", "Leg"]);
+    setCategories([
+      "Medicine",
+      "Head",
+      "Hand",
+      "Dental Care",
+      "Skin Care",
+      "Eye Care",
+      "Vitamins & Supplements",
+      "Orthopedic Products",
+      "Baby Care",
+    ]);
   }, []);
 
   const handleChange = (e) => {
@@ -49,58 +60,60 @@ const ProductModal = ({ product, onClose }) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <h2>{product ? "Edit Product" : "Add Product"}</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Product Info"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          {/* Выпадающий список для категорий */}
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            name="stock"
-            placeholder="Stock"
-            value={formData.stock}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="suppliers"
-            placeholder="Suppliers (comma-separated)"
-            value={formData.suppliers}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="number"
-            name="price"
-            placeholder="Price"
-            value={formData.price}
-            onChange={handleChange}
-            required
-          />
+        <h2>{product ? "Edit Product" : "Add a new product"}</h2>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.leftColumn}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Product Info"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className={styles.inputtext}
+            />
+            <input
+              type="number"
+              name="stock"
+              placeholder="Stock"
+              value={formData.stock}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="number"
+              name="price"
+              placeholder="Price"
+              value={formData.price}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={styles.rightColumn}>
+            <CustomSelect
+              options={categories}
+              selected={formData.category}
+              onChange={(value) =>
+                setFormData({ ...formData, category: value })
+              }
+            />
+
+            <input
+              type="text"
+              name="suppliers"
+              placeholder="Suppliers"
+              value={formData.suppliers}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </form>
+        <div className={styles.buttonContainer}>
           <button type="submit">{product ? "Save" : "Add"}</button>
           <button type="button" onClick={onClose}>
             Cancel
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

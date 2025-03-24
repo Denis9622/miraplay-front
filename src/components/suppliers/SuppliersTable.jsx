@@ -5,6 +5,11 @@ const SuppliersTable = ({
   handleEditSupplier,
   handleDeleteSupplier,
 }) => {
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-EN", options);
+  };
+
   return (
     <div className={styles.suppliersTable}>
       <h3>All Suppliers</h3>
@@ -12,11 +17,12 @@ const SuppliersTable = ({
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Company</th>
+              <th>Suppliers Info</th>
               <th>Address</th>
-              <th>Amount</th>
+              <th>Company</th>
               <th>Delivery Date</th>
+
+              <th>Amount</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -32,12 +38,10 @@ const SuppliersTable = ({
               suppliers.map((supplier) => (
                 <tr key={supplier._id}>
                   <td>{supplier.name}</td>
-                  <td>{supplier.company}</td>
                   <td>{supplier.address}</td>
+                  <td>{supplier.company}</td>
+                  <td>{formatDate(supplier.deliveryDate)}</td>
                   <td>{supplier.amount}</td>
-                  <td>
-                    {new Date(supplier.deliveryDate).toLocaleDateString()}
-                  </td>
                   <td>{supplier.status}</td>
                   <td>
                     <div className={styles.buttonBox}>

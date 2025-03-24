@@ -29,6 +29,8 @@ const SuppliersPage = () => {
   });
   const [editSupplierId, setEditSupplierId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     dispatch(fetchSuppliers());
@@ -98,6 +100,15 @@ const SuppliersPage = () => {
     setEditSupplierId(null);
   };
 
+  const indexOfLastSupplier = currentPage * itemsPerPage;
+  const indexOfFirstSupplier = indexOfLastSupplier - itemsPerPage;
+  const currentSuppliers = filteredSuppliers.slice(
+    indexOfFirstSupplier,
+    indexOfLastSupplier
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className={styles.suppliersPage}>
       {loading && <p>Loading suppliers...</p>}
@@ -106,7 +117,7 @@ const SuppliersPage = () => {
       <div className={styles.filterContainer}>
         <input
           type="text"
-          placeholder="Filter by name"
+          placeholder="User Name"
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
           className={styles.filterInput}
@@ -193,11 +204,8 @@ const SuppliersPage = () => {
                   setSupplierForm({ ...supplierForm, status: e.target.value })
                 }
               >
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Cancelled">Cancelled</option>
+                <option value="Active">Active</option>
+                <option value="Deactive">Deactive</option>
               </select>
               <button
                 onClick={
@@ -213,10 +221,27 @@ const SuppliersPage = () => {
       )}
 
       <SuppliersTable
-        suppliers={filteredSuppliers}
+        suppliers={currentSuppliers}
         handleEditSupplier={handleEditSupplier}
         handleDeleteSupplier={handleDeleteSupplier}
       />
+      <div className={styles.pagination}>
+        {Array.from(
+          { length: Math.ceil(filteredSuppliers.length / itemsPerPage) },
+          (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={
+                currentPage === index + 1
+                  ? styles.activePageButton
+                  : styles.pageButton
+              }
+            >
+            </button>
+          )
+        )}
+      </div>
     </div>
   );
 };
