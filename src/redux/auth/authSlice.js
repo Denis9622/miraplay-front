@@ -1,26 +1,16 @@
-// src/redux/auth/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
   registerUser,
   loginUser,
   logoutUser,
   refreshToken,
-} from "./authOperations.js";
-
-// 🔹 Функция загрузки данных из localStorage с обработкой ошибок
-const loadFromStorage = (key) => {
-  try {
-    return JSON.parse(localStorage.getItem(key)) || null;
-  } catch {
-    return null;
-  }
-};
+} from "./authOperations";
 
 const initialState = {
-  user: loadFromStorage("user"),
-  token: localStorage.getItem("token"),
-  refreshToken: localStorage.getItem("refreshToken"),
-  isAuthenticated: !!localStorage.getItem("token"),
+  user: null,
+  token: null,
+  refreshToken: null,
+  isAuthenticated: false,
   isLoading: false,
   error: null,
 };
@@ -29,12 +19,30 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // ✅ Добавляем возможность обновлять пользователя вручную
     setUser: (state, action) => {
-      state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      if (action.payload && action.payload.email) {
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        state.error = null;
+      } else {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = "Невалидные данные пользователя";
+      }
     },
-    // ✅ Функция для сброса состояния при разлогине
+    setTokens: (state, action) => {
+      if (action.payload.accessToken) {
+        state.token = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
+        state.isAuthenticated = true;
+        state.error = null;
+      } else {
+        state.token = null;
+        state.refreshToken = null;
+        state.isAuthenticated = false;
+        state.error = "Невалидные токены";
+      }
+    },
     clearAuthState: (state) => {
       state.user = null;
       state.token = null;
@@ -42,31 +50,28 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.isLoading = false;
       state.error = null;
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
     },
   },
   extraReducers: (builder) => {
     builder
+      // Регистрация
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.token = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
-        localStorage.setItem("token", action.payload.accessToken);
-        localStorage.setItem("refreshToken", action.payload.refreshToken);
+        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+        state.isAuthenticated = false;
       })
+      // Вход
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -77,44 +82,45 @@ const authSlice = createSlice({
         state.token = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
-        localStorage.setItem("token", action.payload.accessToken);
-        localStorage.setItem("refreshToken", action.payload.refreshToken);
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+        state.isAuthenticated = false;
       })
+      // Выход
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
         state.refreshToken = null;
         state.isAuthenticated = false;
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
+        state.error = null;
       })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.error = action.payload;
+        state.isAuthenticated = false;
+      })
+      // Обновление токена
       .addCase(refreshToken.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.token = action.payload.accessToken;
-        localStorage.setItem("token", action.payload.accessToken);
+        state.token = action.payload;
+        state.isAuthenticated = true;
+        state.error = null;
       })
       .addCase(refreshToken.rejected, (state) => {
         state.user = null;
         state.token = null;
         state.refreshToken = null;
         state.isAuthenticated = false;
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
+        state.error = "Не удалось обновить токен";
       });
   },
 });
 
-// ✅ Экспортируем setUser и clearAuthState для обновления Redux вручную
-export const { setUser, clearAuthState } = authSlice.actions;
+export const { setUser, setTokens, clearAuthState } = authSlice.actions;
 export default authSlice.reducer;

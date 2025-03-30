@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../axiosInstance"; // Используем настроенный api
+import api from "../axiosInstance";
 import { setAuthHeader } from "../axiosInstance";
 
 // 📌 Регистрация пользователя
@@ -14,7 +14,7 @@ export const registerUser = createAsyncThunk(
       localStorage.setItem("user", JSON.stringify({ id, name, email }));
       localStorage.setItem("token", accessToken);
 
-      setAuthHeader(accessToken); // Устанавливаем токен в заголовки
+      setAuthHeader(accessToken);
 
       return { id, name, email, accessToken };
     } catch (error) {
@@ -33,16 +33,32 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await api.post("/auth/login", credentials);
-      const { user, accessToken, refreshToken } = response.data.data;
+      console.log("Ответ сервера:", response.data);
+
+      // Извлекаем данные из ответа
+      const { data } = response.data;
+      const { accessToken } = data;
+
+      // Создаем объект пользователя из данных токена
+      const tokenPayload = JSON.parse(atob(accessToken.split(".")[1]));
+      const user = {
+        id: tokenPayload.userId,
+        email: credentials.email,
+        name: credentials.email.split("@")[0], // Временное имя пользователя
+      };
 
       // Сохраняем токены и данные пользователя
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
 
-      setAuthHeader(accessToken); // Устанавливаем токен в заголовки
+      setAuthHeader(accessToken);
 
-      return { user, accessToken, refreshToken };
+      return {
+        user,
+        accessToken,
+        refreshToken: data.refreshToken,
+      };
     } catch (error) {
       console.error("Ошибка входа:", error.response?.data || error.message);
       return rejectWithValue(error.response?.data || "Ошибка входа");
@@ -93,21 +109,27 @@ export const refreshToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) {
+        throw new Error("Нет refresh token");
+      }
+
       const response = await api.post(
         "/auth/refresh",
         {},
-        refreshToken
-          ? { headers: { Authorization: `Bearer ${refreshToken}` } }
-          : {}
+        { headers: { Authorization: `Bearer ${refreshToken}` } }
       );
       const newAccessToken = response.data.accessToken;
 
       localStorage.setItem("token", newAccessToken);
-      setAuthHeader(newAccessToken); // Устанавливаем новый accessToken
+      setAuthHeader(newAccessToken);
 
       return newAccessToken;
     } catch (error) {
+      // Очищаем все токены при ошибке обновления
       localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      sessionStorage.clear();
       return rejectWithValue("Не удалось обновить токен. Авторизуйтесь снова.");
     }
   }

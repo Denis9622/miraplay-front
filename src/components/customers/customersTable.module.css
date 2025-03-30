@@ -2,7 +2,7 @@
    Global Table Styles
 ------------------------- */
 
-.recentCustomers {
+.recentGames {
   padding: 0 20px;
   background: white;
   border: 1px solid rgba(29, 30, 33, 0.1);
@@ -11,19 +11,19 @@
   border-top-right-radius: 0;
 }
 
-.recentCustomers table {
+.recentGames table {
   width: 100%;
   border-collapse: collapse; /* Убираем внутренние промежутки между ячейками */
 }
 
-.recentCustomers th,
-.recentCustomers td {
+.recentGames th,
+.recentGames td {
   border: 1px solid rgba(29, 30, 33, 0.1); /* Внутренние границы */
   text-align: left; /* Выравнивание текста */
   padding: 20px;
 }
 
-.recentCustomers th {
+.recentGames th {
   background-color: #e7f1ed; /* Фон для заголовков */
   color: #1d1e2166;
   font-size: 14px;
@@ -31,20 +31,20 @@
   line-height: 18px;
 }
 
-.recentCustomers td {
+.recentGames td {
   color: #1d1e21;
   font-size: 16px;
   font-weight: 500;
   line-height: 18px;
 }
 
-.recentCustomers th:first-child,
-.recentCustomers td:first-child {
+.recentGames th:first-child,
+.recentGames td:first-child {
   padding-left: 0; /* Убираем отступ слева у первого столбца */
 }
 
-.recentCustomers th:last-child,
-.recentCustomers td:last-child {
+.recentGames th:last-child,
+.recentGames td:last-child {
   padding-right: 0; /* Убираем отступ справа у последнего столбца */
 }
 
@@ -52,21 +52,21 @@
    Removing Specific Borders
 ------------------------- */
 
-.recentCustomers table tr:first-child th {
+.recentGames table tr:first-child th {
   border-top: none; /* Убираем верхнюю границу у первой строки */
 }
 
-.recentCustomers table tr:last-child td {
+.recentGames table tr:last-child td {
   border-bottom: none; /* Убираем нижнюю границу у последней строки */
 }
 
-.recentCustomers table tr td:first-child,
-.recentCustomers table tr th:first-child {
+.recentGames table tr td:first-child,
+.recentGames table tr th:first-child {
   border-left: none; /* Убираем левую границу у первого столбца */
 }
 
-.recentCustomers table tr td:last-child,
-.recentCustomers table tr th:last-child {
+.recentGames table tr td:last-child,
+.recentGames table tr th:last-child {
   border-right: none; /* Убираем правую границу у последнего столбца */
 }
 
@@ -92,8 +92,8 @@
 ------------------------- */
 
 .buttonBox {
-  display: flex; 
-  gap: 8px; 
+  display: flex;
+  gap: 8px;
 }
 
 .editButton,
@@ -103,16 +103,16 @@
   align-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 50%; 
+  border-radius: 50%;
   background: transparent;
 }
 
 .editButton {
-  border: 1px solid rgba(89, 177, 122, 0.5); 
+  border: 1px solid rgba(89, 177, 122, 0.5);
 }
 
 .deleteButton {
-  border: 1px solid rgba(232, 80, 80, 0.5); 
+  border: 1px solid rgba(232, 80, 80, 0.5);
 }
 
 /* -------------------------
@@ -121,14 +121,14 @@
 
 .iconEdit,
 .iconDelete {
-  width: 16px; 
+  width: 16px;
   height: 16px;
-  fill: currentColor; 
+  fill: currentColor;
 }
 
-.recentCustomers th{
+.recentGames th {
   background: none;
 }
-.recentCustomers table{
+.recentGames table {
   box-shadow: none;
 }

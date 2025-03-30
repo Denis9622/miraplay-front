@@ -1,170 +1,195 @@
 .header {
-  max-width: 1440px;
-  display: flex;
-  top: 0;
-  width: 100%;
-  padding: 15px 40px 15px 20px;
-  border-bottom: 1px solid rgba(29, 30, 33, 0.1);
-  background-color: #f7f8fa;
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background-color: transparent;
+  box-shadow: 0 4px 50px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-out;
+  user-select: none;
+  z-index: 100;
+}
+
+.transparent {
+  background-color: initial;
+  border-bottom: transparent;
+  box-shadow: 0 4px 50px transparent;
+  transition: all 0.3s ease-out;
+}
+
+.container {
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
   align-items: center;
-  flex-shrink: 0;
-  z-index: 10;
+  justify-content: space-between;
+  height: 100%;
 }
 
-.logoImg {
-  margin-right: 60px;
-  width: 44px;
-  height: 44px;
+.logoWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.logotxt {
-  color: #1d1e21;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 28px;
-  letter-spacing: 0em;
+.logo {
+  width: 40px;
+  height: 40px;
+  fill: var(--main-text-color);
+}
+
+.logoTitle {
+  color: #faf9f7;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.logoText {
+  font-size: 14px;
+  color: var(--second-text-color);
+  margin: 0;
 }
 
 .nav {
+  margin: 0 40px;
+}
+
+.list {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  position: relative;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.item a {
+  text-decoration: none;
+  color: var(--main-text-color);
+  transition: color 0.3s ease;
+}
+
+.item:hover a {
+  color: var(--main-green-color);
+}
+
+.botLine {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--main-green-color);
+  transition: width 0.3s ease;
+}
+
+.item:hover .botLine {
+  width: 100%;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: inherit;
+}
+
+.btnWrap {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 20px;
 }
 
-.navLink {
-  margin-top: 4px;
-  color: #1d1e2166;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 18px;
-  letter-spacing: 0em;
-}
-
-.navLink:hover {
-  color: #3f945f;
-}
-
-.active {
-  color: red;
-}
-
-.userAuth {
+.btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-left: auto;
-  gap: 8px;
+  gap: 10px;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: var(--main-text-color);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.green {
+  background-color: var(--main-green-color);
+  border-radius: 5px;
 }
 
 .icon {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
-.linkAuth {
+.iconNoMoveBell {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  animation: none;
+}
+
+.bell {
+  position: relative;
+}
+
+.iconWrap {
   display: flex;
   align-items: center;
-  padding: 16px;
-  border: none;
-  border-radius: 30px;
-  background-color: transparent;
-  color: rgba(25, 26, 21, 1);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  letter-spacing: -0.01em;
+  gap: 10px;
 }
 
-.linkAuth:last-child:not(.logoutButton) {
-  color: rgba(251, 251, 251, 1);
-  background-color: #59b17a;
-  border-radius: 30px;
-  padding: 16px;
+.iconWindow {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
 }
 
-.linkAuth:first-child {
-  padding: 16px;
+.appleWrap {
+  margin-left: 10px;
 }
 
-.linkAuth:hover {
-  border-color: #3f945f;
-}
-
-.linkAuth:active {
-  transform: scale(0.95);
-  background-color: #3f945f;
-}
-
-.logoutUserButton {
-  background-color: transparent;
-  color: #191a15;
-}
-
-/* @media (max-width: 1024px) {
-  .header {
-    padding: 0px 60px;
-  }
-
-  .logo {
-    font-size: 18px;
-    margin-right: 60px;
-  }
-
-  .ulclass {
-    gap: 20px;
-  }
-
+@media (max-width: 1199px) {
   .nav {
-    display: flex;
-    gap: 20px;
+    display: none;
   }
 
-  .userAuth {
-    gap: 16px;
+  .container {
+    padding: 0 15px;
   }
 
-  .linkAuth {
-    font-size: 14px;
-    padding: 12px 30px;
+  .btn {
+    padding: 8px 16px;
+  }
+
+  .green {
+    padding: 8px 16px;
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 1200px) {
   .header {
-    padding: 0px 20px;
-    flex-direction: column;
-    align-items: center;
+    height: 90px;
   }
 
-  .logo {
-    font-size: 16px;
-    margin-right: 0;
-    margin-bottom: 16px;
+  .container {
+    max-width: 1170px;
   }
-
-  .ulclass {
-    gap: 10px;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .userAuth {
-    margin-top: 20px;
-    flex-direction: column;
-    margin-left: 0;
-    gap: 12px;
-  }
-
-  .linkAuth {
-    font-size: 14px;
-    padding: 12px 30px;
-  }
-} */
+}

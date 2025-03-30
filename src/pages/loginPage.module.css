@@ -4,11 +4,10 @@
   /* align-items: center; */
   /* height: 100vh; */
   padding: 0px 100px 262px 100px;
-  background-color: #F7F8FA;
+  background-color: #f7f8fa;
 
   position: relative;
-    /* margin-bottom: 262px; */
-
+  /* margin-bottom: 262px; */
 }
 
 .leftSide {
@@ -58,7 +57,7 @@
 .input {
   width: 100%;
   padding: 13px 18px;
-    color: rgba(29, 30, 33, 0.4);
+  color: rgba(29, 30, 33, 0.4);
 
   border: 1px solid rgba(29, 30, 33, 0.1);
   border-radius: 60px;
@@ -92,4 +91,14 @@
   font-size: 14px;
   line-height: 18px;
   margin: 0 auto;
+}
+
+.error {
+  color: #ff4444;
+  background-color: rgba(255, 68, 68, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
 }

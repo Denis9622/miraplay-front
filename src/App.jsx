@@ -5,18 +5,15 @@ import { selectIsAuthenticated } from "./redux/auth/selectors";
 import { setUser, clearAuthState } from "./redux/auth/authSlice";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import RestrictedRoute from "./components/routes/RestrictedRoute";
-import SharedLayout from "./components/shared/SharedLayout";
+import Header from "./components/shared/Header";
 import Loader from "./components/Loader/Loader.jsx";
 import css from "./App.module.css";
 
 // Ленивое подключение страниц
-const DashboardPage = lazy(() => import("./pages/DashboardPage.jsx"));
-const OrdersPage = lazy(() => import("./pages/OrdersPage.jsx"));
-const ProductsPage = lazy(() => import("./pages/ProductsPage.jsx"));
-const CustomersPage = lazy(() => import("./pages/CustomersPage.jsx"));
-const SuppliersPage = lazy(() => import("./pages/SuppliersPage.jsx"));
+const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
+const GamesPage = lazy(() => import("./pages/GamesPage.jsx"));
 const NotFoundPage = lazy(() =>
   import("./pages/NotFoundPage/NotFoundPage.jsx")
 );
@@ -26,14 +23,29 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+    const initializeAuth = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        const refreshToken = localStorage.getItem("refreshToken");
 
-    if (token && user) {
-      dispatch(setUser(JSON.parse(user))); // Восстанавливаем данные пользователя
-    } else {
-      dispatch(clearAuthState());
-    }
+        if (token && userStr && userStr !== "undefined") {
+          const userData = JSON.parse(userStr);
+          if (userData && userData.email) {
+            dispatch(setUser(userData));
+          } else {
+            dispatch(clearAuthState());
+          }
+        } else {
+          dispatch(clearAuthState());
+        }
+      } catch (error) {
+        console.error("Ошибка при инициализации аутентификации:", error);
+        dispatch(clearAuthState());
+      }
+    };
+
+    initializeAuth();
   }, [dispatch]);
 
   return (
@@ -43,76 +55,40 @@ export default function App() {
           <Route
             path="/"
             element={
-              <PrivateRoute
-                redirectTo="/login"
-                component={<SharedLayout isAuthenticated={isAuthenticated} />}
-              />
+              <div className={css.layout}>
+                <main className={css.main}>
+                  <HomePage />
+                </main>
+              </div>
             }
-          >
-            <Route
-              index
-              element={<PrivateRoute component={<DashboardPage />} />}
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute
-                  redirectTo="/login"
-                  component={<DashboardPage />}
-                />
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <PrivateRoute redirectTo="/login" component={<OrdersPage />} />
-              }
-            />
-            <Route
-              path="/products"
-              element={
-                <PrivateRoute
-                  redirectTo="/login"
-                  component={<ProductsPage />}
-                />
-              }
-            />
-            <Route
-              path="/customers"
-              element={
-                <PrivateRoute
-                  redirectTo="/login"
-                  component={<CustomersPage />}
-                />
-              }
-            />
-            <Route
-              path="/suppliers"
-              element={
-                <PrivateRoute
-                  redirectTo="/login"
-                  component={<SuppliersPage />}
-                />
-              }
-            />
-          </Route>
-          {/* Авторизация */}
+          />
+
+          <Route
+            path="/games"
+            element={
+              <div className={css.layout}>
+                <Header />
+                <main className={css.main}>
+                  <GamesPage />
+                </main>
+              </div>
+            }
+          />
+
           <Route
             path="/login"
             element={
-              <RestrictedRoute
-                redirectTo="/dashboard"
-                component={<LoginPage />}
-              />
+              <RestrictedRoute redirectTo="/">
+                <LoginPage />
+              </RestrictedRoute>
             }
           />
           <Route
             path="/signup"
             element={
-              <RestrictedRoute
-                redirectTo="/dashboard"
-                component={<SignupPage />}
-              />
+              <RestrictedRoute redirectTo="/">
+                <SignupPage />
+              </RestrictedRoute>
             }
           />
 

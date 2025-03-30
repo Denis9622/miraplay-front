@@ -1,28 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import authReducer from "./auth/authSlice.js";
-import productsReducer from "./products/productsSlice.js";
-import ordersReducer from "./orders/ordersSlice.js";
-import customersReducer from "./customers/customersSlice";
-import suppliersReducer from "./suppliers/suppliersSlice";
-import dashboardReducer from "./dashboard/dashboardSlice";
+import { combineReducers } from "redux";
+import authReducer from "./auth/authSlice";
 
-const authPersistConfig = {
-  key: "auth",
+const persistConfig = {
+  key: "root",
   storage,
-  whitelist: ["token", "refreshToken"], // Храним токен и refreshToken
+  whitelist: ["auth"],
 };
 
+const rootReducer = combineReducers({
+  auth: authReducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 export const store = configureStore({
-  reducer: {
-    auth: persistReducer(authPersistConfig, authReducer),
-    products: productsReducer,
-    orders: ordersReducer,
-    customers: customersReducer,
-    suppliers: suppliersReducer,
-    dashboard: dashboardReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

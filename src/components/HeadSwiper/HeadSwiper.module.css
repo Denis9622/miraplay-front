@@ -1,0 +1,210 @@
+.welcome {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  margin-top: -80px;
+  padding-top: 80px;
+}
+
+.video,
+.welcome:after {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: scaleX(-1);
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  background-size: cover;
+}
+
+.welcome:after {
+  background: linear-gradient(
+    -80deg,
+    var(--main-bg-color) 25%,
+    hsla(0, 0%, 9%, 0) 66.32%,
+    var(--main-bg-color) 88.28%
+  );
+  background-size: cover;
+  content: "";
+  height: 100%;
+  right: 0;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+
+.welcomeBotBg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, var(--main-bg-color), transparent);
+  z-index: 2;
+}
+
+.swiper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.swiperSlide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+}
+
+.swiperSlideItem {
+  position: relative;
+  z-index: 3;
+  max-width: 600px;
+  margin-left: 50px;
+  padding-top: 100px;
+}
+
+.secondWarrior {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.primaryWarrior {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: auto;
+  z-index: 2;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  color: var(--main-text-color);
+}
+
+.thickTitle {
+  color: var(--main-green-color);
+}
+
+.text {
+  font-size: 20px;
+  line-height: 1.5;
+  margin-bottom: 40px;
+  color: var(--second-text-color);
+}
+
+.thickText {
+  color: var(--main-green-color);
+  font-weight: 600;
+}
+
+.btn {
+  background-color: var(--main-green-color);
+  color: var(--main-text-color);
+  border: none;
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(63, 156, 20, 0.3);
+}
+
+.downloadBtn {
+  background: transparent;
+  color: var(--main-text-color);
+  border: 1px solid var(--main-text-color);
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.downloadBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.apple {
+  margin-left: 10px;
+}
+
+.downloadText {
+  font-size: 14px;
+  color: var(--second-text-color);
+  margin: 0;
+}
+
+@media (max-width: var(--tablet)) {
+  .swiperSlideItem {
+    margin-left: 20px;
+    padding: 100px 20px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .text {
+    font-size: 16px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .downloadBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .primaryWarrior {
+    width: 100%;
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 1200px) {
+  .video {
+    background-size: cover;
+    right: -150px;
+    width: 90%;
+    z-index: 0;
+  }
+}

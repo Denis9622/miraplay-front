@@ -37,5 +37,11 @@
     <symbol id="icon-add" viewBox="0 0 32 32">
       <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M28 16H4M16 4v0z" style="stroke:var(--color1, #fff)"/>
     </symbol>
+     <symbol id="icon-x" viewBox="0 0 32 32">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.462" d="M24 8 8 24M8 8l16 16"/>
+    </symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 32 32">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="m8 12 8 8 8-8"/>
+    </symbol>
   </defs>
 </svg>
