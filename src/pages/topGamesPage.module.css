@@ -1,0 +1,94 @@
+.topGamesPage {
+  padding-top: 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: var(--fw-medium);
+  color: var(--main-text-color);
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: var(--secondary-text-color);
+  font-size: 16px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.gamesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  position: relative;
+}
+
+.gameCardWrapper {
+  position: relative;
+}
+
+.topBadge {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-medium);
+  color: #000000;
+  z-index: 1;
+}
+
+.top1 {
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+}
+
+.top2 {
+  background: linear-gradient(135deg, #c0c0c0, #a9a9a9);
+}
+
+.top3 {
+  background: linear-gradient(135deg, #cd7f32, #b87333);
+}
+
+.loadMoreButton {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--main-green-color);
+  border: 1px solid var(--main-green-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: var(--fw-medium);
+  transition: all 0.3s ease;
+}
+
+.loadMoreButton:hover {
+  background: var(--main-green-color);
+  color: #000000;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--secondary-text-color);
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+  color: #ff4444;
+}

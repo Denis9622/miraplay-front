@@ -1,3 +1,17 @@
+:root {
+  --main-text-color: #ffffff;
+  --secondary-text-color: #afafaf;
+  --main-green-color: #00ff00;
+  --hover-green-color: #00cc00;
+  --background-color: #181818;
+  --card-background: #1a1a1a;
+  --modal-background: rgba(0, 0, 0, 0.8);
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-ultrabold: 800;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -31,7 +45,17 @@ p {
 
 html {
   scroll-behavior: smooth;
-  /* background-color: #f7f8fa; */
+  background-color: var(--background-color);
+}
+
+body {
+  font-family: "Neue Machina", sans-serif;
+  font-weight: var(--fw-regular);
+  background-color: var(--background-color);
+  color: var(--main-text-color);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
 }
 
 p:last-child {
@@ -47,7 +71,7 @@ a {
 }
 
 a:hover {
-  color: #7a272f;
+  color: var(--main-green-color);
 }
 
 ul {
@@ -63,69 +87,53 @@ p {
 }
 
 .link {
-  color: black;
+  color: var(--main-text-color);
   text-decoration: none;
 }
 
 .link:hover {
-  color: #7a272f;
+  color: var(--main-green-color);
 }
 
 button {
   cursor: pointer;
+  font-family: inherit;
 }
+
 span {
   margin: 0;
   padding: 0;
 }
 
-/* Reset styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-    background-color:  #1c1c1c;
-
-  /* color: #333; */
-  /* line-height: 1.6; */
-}
-
 /* Основные стили */
 .app {
-  /* width: 100%; */
-  max-width: 1440px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  /* padding: 0 20px; */
+  padding: 0 20px;
 }
 
-/* .layout {
-  background-color: #f7f8fa;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-} */
-
-
-/* @media (min-width: 320px) {
+/* Медиа запросы */
+@media (min-width: 320px) {
   .app {
+    padding: 0 15px;
   }
 }
 
 @media (min-width: 375px) {
   .app {
+    padding: 0 20px;
   }
 }
 
 @media (min-width: 768px) {
   .app {
+    padding: 0 30px;
   }
 }
 
 @media (min-width: 1440px) {
   .app {
+    padding: 0 40px;
   }
-} */
+}

@@ -3,25 +3,20 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 90px;
-  background-color: transparent;
-  box-shadow: 0 4px 50px rgba(0, 0, 0, 0.5);
+  height: 80px;
   transition: all 0.3s ease-out;
   user-select: none;
-  z-index: 100;
+  z-index: 10;
 }
 
-.transparent {
-  background-color: initial;
-  border-bottom: transparent;
-  box-shadow: 0 4px 50px transparent;
-  transition: all 0.3s ease-out;
+.scrolled {
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .container {
-  max-width: 1170px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,28 +25,25 @@
 
 .logoWrap {
   display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo {
-  width: 40px;
-  height: 40px;
-  fill: var(--main-text-color);
+  flex-direction: column;
 }
 
 .logoTitle {
+  color: var(--main-text-color);
   color: #faf9f7;
   font-size: 18px;
   font-weight: 800;
-  letter-spacing: 0.03em;
-  margin: 0;
+  left: 15px;
+  top: 23px;
 }
 
 .logoText {
+  color: var(--secondary-text-color);
   font-size: 14px;
-  color: var(--second-text-color);
-  margin: 0;
+  font-weight: 300;
+  text-align: left;
+  top: 43px;
+  width: 150px;
 }
 
 .nav {
@@ -60,7 +52,7 @@
 
 .list {
   display: flex;
-  gap: 30px;
+  gap: 40px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -98,15 +90,16 @@
 
 .title {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   margin: 0;
   color: inherit;
+  color: var(--secondary-text-color);
 }
 
 .btnWrap {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .btn {
@@ -119,7 +112,7 @@
   color: var(--main-text-color);
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   transition: all 0.3s ease;
 }
 
@@ -130,66 +123,79 @@
 
 .green {
   background-color: var(--main-green-color);
-  border-radius: 5px;
+  color: #000000;
+  border-radius: 4px;
+  font-weight: var(--fw-medium);
 }
 
-.icon {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
+.green:hover {
+  background-color: var(--hover-green-color);
+  color: var(--main-text-color);
 }
 
-.iconNoMoveBell {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-  animation: none;
+.authBtn {
+  color: var(--main-text-color);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  padding: 8px 16px;
+  transition: color 0.3s ease;
 }
 
-.bell {
-  position: relative;
+.authBtn:hover {
+  color: var(--main-green-color);
+}
+
+.signupBtn {
+  color: var(--main-green-color);
+}
+
+.signupBtn:hover {
+  color: var(--hover-green-color);
 }
 
 .iconWrap {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.iconWindow {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
+.iconWrap span {
+  font-weight: var(--fw-medium);
 }
 
-.appleWrap {
-  margin-left: 10px;
+.adminBtn {
+  color: var(--main-green-color);
+  border: 1px solid var(--main-green-color);
+  border-radius: 4px;
+  padding: 8px 16px;
 }
 
-@media (max-width: 1199px) {
-  .nav {
-    display: none;
-  }
+.adminBtn:hover {
+  background-color: var(--main-green-color);
+  color: #000000;
+  opacity: 1;
+}
 
+@media (min-width: 320px) {
   .container {
     padding: 0 15px;
   }
+}
 
-  .btn {
-    padding: 8px 16px;
-  }
-
-  .green {
-    padding: 8px 16px;
+@media (min-width: 375px) {
+  .container {
+    padding: 0 20px;
   }
 }
 
-@media (min-width: 1200px) {
-  .header {
-    height: 90px;
-  }
-
+@media (min-width: 768px) {
   .container {
-    max-width: 1170px;
+    padding: 0 30px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    padding: 0 40px;
   }
 }

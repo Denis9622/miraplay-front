@@ -26,9 +26,8 @@
 
 /* Общий контейнер */
 .gamesPage {
-  padding: 20px;
   max-width: var(--desktop);
-  margin: 0 auto;
+  margin: 100px auto 0;
   background-color: var(--main-bg-color);
   color: var(--main-text-color);
 }

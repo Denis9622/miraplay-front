@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { addGame, updateGame } from "../api/games";
 import styles from "./gamesModal.module.css";
 
-const GamesModal = ({ game, onClose }) => {
-  const queryClient = useQueryClient();
+const GamesModal = ({ game, onClose, onSubmit, isLoading, genres }) => {
   const [formData, setFormData] = useState({
     commonGameName: game?.commonGameName || "",
     systemGameName: game?.systemGameName || "",
@@ -47,20 +44,6 @@ const GamesModal = ({ game, onClose }) => {
     }
   }, [game]);
 
-  const genres = [
-    "ALL",
-    "FREE",
-    "MOBA",
-    "SHOOTERS",
-    "LAUNCHERS",
-    "MMORPG",
-    "STRATEGY",
-    "FIGHTING",
-    "RACING",
-    "SURVIVAL",
-    "ONLINE",
-  ];
-
   const gameClasses = ["STANDART", "PREMIUM", "VIP"];
 
   const handleChange = (e) => {
@@ -82,13 +65,13 @@ const GamesModal = ({ game, onClose }) => {
         !formData.releaseDate ||
         !formData.gameClass
       ) {
-        alert("Пожалуйста, заполните все обязательные поля");
+        alert("Будь ласка, заповніть всі обов'язкові поля");
         return;
       }
 
       // Валидация формата даты
       if (!/^\d{2}\.\d{2}\.\d{4}$/.test(formData.releaseDate)) {
-        alert("Дата релиза должна быть в формате DD.MM.YYYY");
+        alert("Дата релізу має бути у форматі DD.MM.YYYY");
         return;
       }
 
@@ -113,26 +96,20 @@ const GamesModal = ({ game, onClose }) => {
         gameBoxArt: formData.gameBoxArt?.trim() || "",
         gameLogo: formData.gameLogo?.trim() || "",
         gameHero: formData.gameHero?.trim() || "",
-        isLocalGame: true,
+        isLocalGame: formData.isLocalGame,
       };
 
-      if (game) {
-        await updateGame({ id: game._id, gameData: gameDataToSend });
-      } else {
-        await addGame(gameDataToSend);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ["games"] });
-      onClose();
+      // Вызываем onSubmit из пропсов
+      await onSubmit(gameDataToSend);
     } catch (error) {
-      console.error("Ошибка обновления игры:", error);
+      console.error("Помилка оновлення гри:", error);
       if (error.response) {
-        console.error("Ответ сервера:", error.response.data);
+        console.error("Відповідь сервера:", error.response.data);
         alert(
-          error.response.data.message || "Произошла ошибка при сохранении игры"
+          error.response.data.message || "Сталася помилка при збереженні гри"
         );
       } else {
-        alert("Произошла ошибка при сохранении игры");
+        alert("Сталася помилка при збереженні гри");
       }
     }
   };
@@ -145,7 +122,7 @@ const GamesModal = ({ game, onClose }) => {
             <use href="/sprite.svg#icon-x"></use>
           </svg>
         </button>
-        <h2>{game ? "Редактировать игру" : "Добавить новую игру"}</h2>
+        <h2>{game ? "Редагувати гру" : "Додати нову гру"}</h2>
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.leftColumn}>
             <input
@@ -181,8 +158,8 @@ const GamesModal = ({ game, onClose }) => {
               required
             >
               {genres.map((genre) => (
-                <option key={genre} value={genre}>
-                  {genre}
+                <option key={genre.value} value={genre.value}>
+                  {genre.label}
                 </option>
               ))}
             </select>
@@ -248,6 +225,30 @@ const GamesModal = ({ game, onClose }) => {
               onChange={handleChange}
               className={styles.inputtext}
             />
+            <div className={styles.checkboxContainer}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  name="inTop"
+                  checked={formData.inTop}
+                  onChange={handleChange}
+                  className={styles.checkbox}
+                />
+                В топі
+              </label>
+            </div>
+            <div className={styles.checkboxContainer}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  name="isLocalGame"
+                  checked={formData.isLocalGame}
+                  onChange={handleChange}
+                  className={styles.checkbox}
+                />
+                Локальна гра
+              </label>
+            </div>
           </div>
           <div className={styles.rightColumn}>
             <textarea
@@ -257,23 +258,19 @@ const GamesModal = ({ game, onClose }) => {
               onChange={handleChange}
               className={styles.textarea}
             />
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                name="inTop"
-                checked={formData.inTop}
-                onChange={handleChange}
-              />
-              В топе
-            </label>
           </div>
         </form>
         <div className={styles.buttonContainer}>
-          <button className={styles.primaryButton} onClick={handleSubmit}>
-            {game ? "Сохранить" : "Добавить"}
+          <button
+            type="submit"
+            className={styles.primaryButton}
+            onClick={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? "Збереження..." : game ? "Зберегти" : "Додати"}
           </button>
-          <button type="button" onClick={onClose}>
-            Отмена
+          <button type="button" onClick={onClose} disabled={isLoading}>
+            Скасувати
           </button>
         </div>
       </div>

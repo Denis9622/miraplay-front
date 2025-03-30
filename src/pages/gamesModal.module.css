@@ -83,68 +83,54 @@ form select:focus {
   outline: none;
 }
 
+.checkboxContainer {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
 .checkboxLabel {
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: #333;
 }
 
-.checkboxLabel input[type="checkbox"] {
+.checkbox {
   width: 18px;
   height: 18px;
   cursor: pointer;
+  accent-color: #4caf50;
 }
 
 .buttonContainer {
-  margin-top: 40px;
-  text-align: left;
-}
-
-.buttonContainer button {
-  width: 133px;
-  padding: 13px 0px;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 18px;
-  letter-spacing: 0%;
-  border: none;
-  border-radius: 60px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-/* Кнопки Submit и Cancel */
-.buttonContainer button[type="submit"] {
-  background-color: rgba(89, 177, 122, 1);
-  color: white;
-  margin-right: 8px;
-}
-
-.buttonContainer button[type="submit"]:hover {
-  background-color: rgba(63, 148, 95, 1);
-}
-
-.buttonContainer button[type="button"] {
-  background-color: rgba(29, 30, 33, 0.1);
-  color: rgba(29, 30, 33, 0.4);
-  border: 1px solid transparent;
-}
-
-.buttonContainer button[type="button"]:hover {
-  border: 1px solid rgba(89, 177, 122, 1);
-  background-color: white;
-  color: rgba(89, 177, 122, 1);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 
 .primaryButton {
-  background-color: rgba(89, 177, 122, 1);
+  background-color: #4caf50;
   color: white;
-  margin-right: 8px;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
 .primaryButton:hover {
-  background-color: rgba(63, 148, 95, 1);
+  background-color: #45a049;
+}
+
+.primaryButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 /* Заголовок модального окна */

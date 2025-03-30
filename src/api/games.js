@@ -1,16 +1,87 @@
 import api from "../redux/axiosInstance";
+import axios from "../redux/axiosInstance";
 
-export const fetchGames = async ({ genre = "ALL", page = 1, limit = 9 }) => {
+export const fetchGames = async ({
+  page = 1,
+  limit = 9,
+  genre,
+  search,
+  sort,
+  order,
+  inTop,
+}) => {
   try {
-    const response = await api.get("/games", {
-      params: { genre, page, limit },
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
     });
-    return response.data.data;
+
+    if (genre) {
+      params.append("genre", genre);
+    }
+
+    if (search) {
+      params.append("search", search);
+    }
+
+    if (sort) {
+      params.append("sort", sort);
+    }
+
+    if (order) {
+      params.append("order", order);
+    }
+
+    if (inTop !== undefined) {
+      params.append("inTop", String(inTop));
+    }
+
+    const { data } = await axios.get(`/games?${params.toString()}`, {
+      headers: {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        "If-None-Match": "",
+      },
+    });
+
+    return data;
   } catch (error) {
-    console.error(
-      "Ошибка получения игр:",
-      error.response?.data || error.message
-    );
+    if (error.response?.status === 304) {
+      // Если получаем 304, делаем повторный запрос без кэша
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      });
+
+      if (genre) {
+        params.append("genre", genre);
+      }
+
+      if (search) {
+        params.append("search", search);
+      }
+
+      if (sort) {
+        params.append("sort", sort);
+      }
+
+      if (order) {
+        params.append("order", order);
+      }
+
+      if (inTop !== undefined) {
+        params.append("inTop", String(inTop));
+      }
+
+      const { data } = await axios.get(`/games?${params.toString()}`, {
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+          "If-None-Match": "",
+        },
+      });
+      return data;
+    }
     throw error;
   }
 };

@@ -1,34 +1,19 @@
 .welcome {
-  height: 100vh;
+  color: #fff;
+  height: 100%;
   overflow: hidden;
+  padding-bottom: 125px;
   position: relative;
   width: 100%;
-  margin-top: -80px;
-  padding-top: 80px;
-}
-
-.video,
-.welcome:after {
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  transform: scaleX(-1);
-}
-
-.video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  background-size: cover;
+  margin: 0 auto;
 }
 
 .welcome:after {
   background: linear-gradient(
     -80deg,
-    var(--main-bg-color) 25%,
+    #181818 25%,
     hsla(0, 0%, 9%, 0) 66.32%,
-    var(--main-bg-color) 88.28%
+    #181818 88.28%
   );
   background-size: cover;
   content: "";
@@ -41,13 +26,30 @@
 }
 
 .welcomeBotBg {
-  position: absolute;
+  background: linear-gradient(180deg, hsla(0, 0%, 9%, 0), #181818 100%);
   bottom: 0;
-  left: 0;
+  content: "";
+  height: 30%;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
   width: 100%;
-  height: 200px;
-  background: linear-gradient(to top, var(--main-bg-color), transparent);
-  z-index: 2;
+  z-index: 55;
+}
+
+.video {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: scaleX(-1);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  background-size: cover;
+  right: -150px;
+  width: 90%;
+  z-index: 0;
 }
 
 .swiper {
@@ -60,7 +62,6 @@
 .swiperSlide {
   display: flex;
   align-items: center;
-  justify-content: center;
   position: relative;
   height: 100%;
 }
@@ -68,9 +69,9 @@
 .swiperSlideItem {
   position: relative;
   z-index: 3;
-  max-width: 600px;
-  margin-left: 50px;
-  padding-top: 100px;
+  width: 620px;
+  margin-left: 0;
+  padding: 100px 0 0 0px;
 }
 
 .secondWarrior {
@@ -93,31 +94,35 @@
 }
 
 .title {
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  color: var(--main-text-color);
+  font-size: 54px;
+  font-weight: var(--fw-light);
+  line-height: 125%;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  width: 620px;
 }
 
 .thickTitle {
-  color: var(--main-green-color);
+  font-weight: 900;
+  color: white;
 }
 
 .text {
+  color: #afafaf;
   font-size: 20px;
-  line-height: 1.5;
-  margin-bottom: 40px;
-  color: var(--second-text-color);
+  font-weight: 300;
+  line-height: 170%;
+  margin-bottom: 50px;
+  width: 575px;
 }
 
 .thickText {
-  color: var(--main-green-color);
+  color: white;
   font-weight: 600;
 }
 
 .btn {
-  background-color: var(--main-green-color);
+  background-color: #3f9c14;
   color: var(--main-text-color);
   border: none;
   padding: 15px 40px;
@@ -127,31 +132,31 @@
   cursor: pointer;
   margin-right: 20px;
   transition: all 0.3s ease;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(63, 156, 20, 0.3);
+  box-shadow: 0 0 40px 40px var(--main-green-color) inset,
+    0 0 0 0 var(--main-green-color);
+  color: #eaeaea;
+  cursor: pointer;
+  -webkit-filter: drop-shadow(0 20px 40px rgba(63, 156, 20, 0.3));
+  filter: drop-shadow(0 20px 40px rgba(63, 156, 20, 0.3));
+  font-size: 15px;
+  font-weight: 800;
+  height: 78px;
+  line-height: 1.43;
+  margin-left: 7px;
+  text-align: center;
+  text-transform: uppercase;
+  -webkit-transform: skew(-10deg);
+  transform: skew(-10deg);
+  transition: all 0.2s ease-in-out;
+  width: 274px;
 }
 
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(63, 156, 20, 0.3);
-}
-
-.downloadBtn {
-  background: transparent;
-  color: var(--main-text-color);
-  border: 1px solid var(--main-text-color);
-  padding: 15px 30px;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-}
-
-.downloadBtn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
 }
 
 .icon {
@@ -170,41 +175,10 @@
   margin: 0;
 }
 
-@media (max-width: var(--tablet)) {
-  .swiperSlideItem {
-    margin-left: 20px;
-    padding: 100px 20px;
-  }
-
-  .title {
-    font-size: 32px;
-  }
-
-  .text {
-    font-size: 16px;
-  }
-
-  .btn {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .downloadBtn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .primaryWarrior {
-    width: 100%;
-    opacity: 0.5;
-  }
-}
-
 @media (min-width: 1200px) {
   .video {
     background-size: cover;
-    right: -150px;
-    width: 90%;
-    z-index: 0;
+    right: 0;
+    width: 100%;
   }
 }
