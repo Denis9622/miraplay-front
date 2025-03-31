@@ -30,7 +30,7 @@ class SocketService {
       return;
     }
 
-    this.socket = io("http://localhost:3000", {
+    this.socket = io("https://miraplay-back.onrender.com", {
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: 5,

@@ -239,8 +239,8 @@ npm install
 3. Створіть файл .env з необхідними змінними:
 
 ```
-VITE_API_URL=http://localhost:3000
-VITE_SOCKET_URL=http://localhost:3000
+VITE_API_URL=https://miraplay-back.onrender.com
+VITE_SOCKET_URL=https://miraplay-back.onrender.com
 ```
 
 4. Запустіть додаток:

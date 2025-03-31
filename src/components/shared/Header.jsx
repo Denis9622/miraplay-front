@@ -92,7 +92,10 @@ const Header = () => {
                 </button>
                 <button
                   className={`${styles.btn} ${styles.authBtn} ${styles.signupBtn}`}
-                  onClick={() => handleAuthModeChange("register")}
+                  onClick={() => {
+                    setAuthMode("register");
+                    setIsAuthModalOpen(true);
+                  }}
                   type="button"
                 >
                   Реєстрація

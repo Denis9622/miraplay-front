@@ -2,20 +2,23 @@ import axios from "axios";
 import { store } from "./store";
 import { refreshToken } from "../redux/auth/authOperations";
 
-const instance = axios.create({
-  baseURL: "http://localhost:3000",
+const axiosInstance = axios.create({
+  baseURL: "https://miraplay-back.onrender.com",
+  headers: {
+    "Content-Type": "application/json",
+  },
   withCredentials: true,
 });
 
 export const setAuthHeader = (token) => {
-  instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+  axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
 export const clearAuthHeader = () => {
-  delete instance.defaults.headers.common.Authorization;
+  delete axiosInstance.defaults.headers.common.Authorization;
 };
 
-instance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -24,7 +27,7 @@ instance.interceptors.response.use(
       try {
         const newToken = await store.dispatch(refreshToken()).unwrap();
         setAuthHeader(newToken);
-        return instance(originalRequest);
+        return axiosInstance(originalRequest);
       } catch {
         store.dispatch({ type: "auth/clearAuthState" });
         return Promise.reject(error);
@@ -34,4 +37,4 @@ instance.interceptors.response.use(
   }
 );
 
-export default instance;
+export default axiosInstance;
